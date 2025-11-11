@@ -18,7 +18,7 @@ const formatCpfForDisplay = (value) => {
     .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://localhost:7242'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://localhost:5173'
 
 function App() {
   const [formData, setFormData] = useState({ ...initialFormState })

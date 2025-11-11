@@ -1,24 +1,41 @@
 import { useState } from 'react'
 import './App.css'
 
+const initialFormState = {
+  name: '',
+  birthDate: '',
+  cpf: '',
+  email: '',
+}
+
+const sanitizeCpf = (value) => value.replace(/\D/g, '').slice(0, 11)
+
+const formatCpfForDisplay = (value) => {
+  const digits = sanitizeCpf(value)
+  return digits
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d)/, '$1.$2')
+    .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+}
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://localhost:7242'
+
 function App() {
-  const [formData, setFormData] = useState({
-    name: '',
-    birthDate: '',
-    cpf: '',
-    email: '',
-  })
+  const [formData, setFormData] = useState({ ...initialFormState })
   const [submitted, setSubmitted] = useState(null)
+  const [status, setStatus] = useState('idle')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleChange = (event) => {
     const { name, value } = event.target
 
+    if (status !== 'idle') {
+      setStatus('idle')
+      setErrorMessage('')
+    }
+
     if (name === 'cpf') {
-      const digits = value.replace(/\D/g, '').slice(0, 11)
-      const formatted = digits
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
+      const formatted = formatCpfForDisplay(value)
       setFormData((prev) => ({ ...prev, cpf: formatted }))
       return
     }
@@ -26,10 +43,49 @@ function App() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    setSubmitted(formData)
-    setFormData({ name: '', birthDate: '', cpf: '', email: '' })
+    setStatus('submitting')
+    setErrorMessage('')
+
+    const payload = {
+      name: formData.name.trim(),
+      birthDate: formData.birthDate,
+      cpf: sanitizeCpf(formData.cpf),
+      email: formData.email.trim(),
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/registrations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) {
+        let message = 'Não foi possível salvar o cadastro.'
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const body = await response.json()
+          if (body?.message) {
+            message = body.message
+          }
+        }
+        throw new Error(message)
+      }
+
+      const data = await response.json()
+      setSubmitted(data)
+      setStatus('success')
+      setFormData({ ...initialFormState })
+    } catch (error) {
+      setStatus('error')
+      setErrorMessage(
+        error instanceof Error ? error.message : 'Erro inesperado ao salvar.',
+      )
+    }
   }
 
   return (
@@ -42,6 +98,18 @@ function App() {
           informações antes de salvar.
         </p>
       </header>
+
+      {status === 'error' && errorMessage && (
+        <div className="alert alert-error" role="alert">
+          {errorMessage}
+        </div>
+      )}
+
+      {status === 'success' && submitted && (
+        <div className="alert alert-success" role="status">
+          Cadastro salvo com sucesso.
+        </div>
+      )}
 
       <form className="form" onSubmit={handleSubmit}>
         <div className="fields-grid">
@@ -104,7 +172,9 @@ function App() {
         </div>
 
         <div className="form-footer">
-          <button type="submit">Salvar cadastro</button>
+          <button type="submit" disabled={status === 'submitting'}>
+            {status === 'submitting' ? 'Salvando...' : 'Salvar cadastro'}
+          </button>
         </div>
       </form>
 
@@ -129,11 +199,19 @@ function App() {
             </li>
             <li>
               <strong>CPF:</strong>
-              <span>{submitted.cpf}</span>
+              <span>{formatCpfForDisplay(submitted.cpf)}</span>
             </li>
             <li>
               <strong>E-mail:</strong>
               <span>{submitted.email}</span>
+            </li>
+            <li>
+              <strong>Criado em:</strong>
+              <span>
+                {submitted.createdAt
+                  ? new Date(submitted.createdAt).toLocaleString('pt-BR')
+                  : ''}
+              </span>
             </li>
           </ul>
         </section>

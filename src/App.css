@@ -57,6 +57,26 @@
   }
 }
 
+.alert {
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  text-align: center;
+}
+
+.alert-error {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+
+.alert-success {
+  background: rgba(34, 197, 94, 0.18);
+  border-color: rgba(34, 197, 94, 0.35);
+  color: #bbf7d0;
+}
+
 .fields-grid {
   display: grid;
   gap: 1.25rem;
@@ -123,6 +143,16 @@
 .form-footer button:active {
   transform: translateY(0);
   box-shadow: none;
+}
+
+.form-footer button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.form-footer button[disabled]:hover {
+  transform: none;
 }
 
 .submitted {

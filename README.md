@@ -35,6 +35,20 @@ npm run dev
 
 Open the URL provided by Vite (usually `http://localhost:5173`). Edits under `src/` hot-reload instantly thanks to Vite's HMR pipeline.
 
+### Backend API
+
+The form submits to the companion ASP.NET Core project located at `../aspnetcore-api`.
+
+1. Configure MySQL credentials inside `aspnetcore-api/appsettings.Development.json` (`ConnectionStrings:DefaultConnection`).
+2. Restore and run the API:
+	```powershell
+	cd ..\aspnetcore-api
+	dotnet restore
+	dotnet run
+	```
+3. Confirm the Swagger UI is available at `https://localhost:7242/swagger` and keep the server running.
+4. The React app reads the API base URL from `.env` (`VITE_API_BASE_URL`). Adjust this value if the backend runs on a different host or port.
+
 ### Available Scripts
 
 - `npm run dev` – start the development server with hot module replacement.
@@ -54,8 +68,9 @@ src/
 ### Customization Notes
 
 - Adjust layout tokens (colors, radii, grid) inside `App.css` to reflect your brand.
-- To persist submissions, replace the `useState` mock with API calls (e.g., inside `handleSubmit`).
+- Customize the payload or response handling in `App.jsx#handleSubmit` if your API contract changes.
 - Input masking currently handles CPF client-side; move it to a shared utility if more fields require formatting.
+- Update `.env` whenever the API base URL changes.
 
 ### Requirements
 
@@ -95,6 +110,20 @@ npm run dev
 
 Abra a URL informada pelo Vite (geralmente `http://localhost:5173`). Alterações dentro de `src/` recarregam automaticamente graças ao HMR.
 
+### API Backend
+
+O formulário envia os dados para o projeto ASP.NET Core localizado em `../aspnetcore-api`.
+
+1. Configure as credenciais do MySQL em `aspnetcore-api/appsettings.Development.json` (`ConnectionStrings:DefaultConnection`).
+2. Restaure e execute a API:
+	```powershell
+	cd ..\aspnetcore-api
+	dotnet restore
+	dotnet run
+	```
+3. Confirme a disponibilidade do Swagger em `https://localhost:7242/swagger` e mantenha o servidor ativo.
+4. O app React lê o endpoint da API via `.env` (`VITE_API_BASE_URL`). Ajuste o valor caso a API rode em outra porta ou host.
+
 ### Scripts Disponíveis
 
 - `npm run dev` – inicia o servidor de desenvolvimento com hot reload.
@@ -114,8 +143,9 @@ src/
 ### Notas de Personalização
 
 - Ajuste tokens de layout (cores, bordas, grid) em `App.css` para refletir a identidade visual desejada.
-- Para persistir dados, substitua o mock com `useState` por chamadas a uma API no `handleSubmit`.
+- Personalize o payload ou o tratamento da resposta em `App.jsx#handleSubmit` caso o contrato da API mude.
 - A máscara de CPF roda no cliente; mova-a para uma utilidade compartilhada caso novos campos precisem de formatação similar.
+- Lembre-se de atualizar o `.env` sempre que o endpoint da API for alterado.
 
 ### Requisitos
 

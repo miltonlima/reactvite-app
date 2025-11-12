@@ -19,6 +19,7 @@ This project is a single-page React application bootstrapped with Vite. It deliv
 	- `CPF` (`text`, auto-formatted as `000.000.000-00`)
 	- `Email` (`email`)
 - **Navigation** toggles between the original modern layout (`/`) and a compact white-card variation (`/simple`) while reusing the same backend integration.
+- **Navigation** toggles between the modern layout (`/`), the compact white-card variation (`/simple`), and a reporting view (`/reports`) that lists all saved registrations.
 - **Submission panel** showing a confirmation badge and the captured data once the form is submitted.
 
 ### Tech Stack
@@ -70,6 +71,7 @@ src/
 	pages/
 		ModernForm.jsx        # Glassmorphism-inspired layout
 		SimpleForm.jsx        # Compact white-card layout
+		Reports.jsx           # Registrations report table
 	index.css               # Global theme, fonts and resets
 ```
 
@@ -101,7 +103,7 @@ Este projeto é uma aplicação React de página única criada com Vite. Ele dis
 	- `Data de nascimento` (`date`, limitada até a data atual)
 	- `CPF` (`text`, autoformatado como `000.000.000-00`)
 	- `E-mail` (`email`)
-- **Navegação** permite alternar entre o layout moderno original (`/`) e a variação compacta em cartão branco (`/simple`) que compartilha a mesma integração com a API.
+- **Navegação** permite alternar entre o layout moderno original (`/`), a variação compacta em cartão branco (`/simple`) e o relatório de cadastros (`/reports`) que exibe todos os registros.
 - **Painel de submissão** exibe um selo de confirmação e os dados informados após salvar.
 
 ### Stack Tecnológica
@@ -153,6 +155,7 @@ src/
 	pages/
 		ModernForm.jsx        # Layout glassmorphism
 		SimpleForm.jsx        # Layout compacto em cartão branco
+		Reports.jsx           # Relatório de cadastros
 	index.css               # Tema global, fontes e resets
 ```
 

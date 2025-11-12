@@ -18,12 +18,14 @@ This project is a single-page React application bootstrapped with Vite. It deliv
 	- `Birth date` (`date`, capped at the current day)
 	- `CPF` (`text`, auto-formatted as `000.000.000-00`)
 	- `Email` (`email`)
+- **Navigation** toggles between the original modern layout (`/`) and a compact white-card variation (`/simple`) while reusing the same backend integration.
 - **Submission panel** showing a confirmation badge and the captured data once the form is submitted.
 
 ### Tech Stack
 
 - Vite 5 with React 18 (`StrictMode` + `createRoot`).
 - Functional components and the `useState` hook manage local state and input control.
+- Client-side routing with `react-router-dom` hosts multiple form variants on dedicated routes.
 - CSS modules (`App.css`, `index.css`) define gradients, blur layers, responsive grid and focus states.
 
 ### Getting Started
@@ -60,16 +62,21 @@ The form submits to the companion ASP.NET Core project located at `../aspnetcore
 
 ```
 src/
-	App.jsx      # Registration form component
-	App.css      # Form-specific styling
-	main.jsx     # Application bootstrap (React + StrictMode)
-	index.css    # Global theme, fonts and resets
+	App.jsx                 # Application shell with navigation and routes
+	App.css                 # Shared styling for the form variants
+	main.jsx                # Application bootstrap (React + BrowserRouter)
+	hooks/
+		useRegistrationForm.js # Shared state + submission workflow
+	pages/
+		ModernForm.jsx        # Glassmorphism-inspired layout
+		SimpleForm.jsx        # Compact white-card layout
+	index.css               # Global theme, fonts and resets
 ```
 
 ### Customization Notes
 
 - Adjust layout tokens (colors, radii, grid) inside `App.css` to reflect your brand.
-- Customize the payload or response handling in `App.jsx#handleSubmit` if your API contract changes.
+- Customize the payload or response handling in `hooks/useRegistrationForm.js` if your API contract changes.
 - Input masking currently handles CPF client-side; move it to a shared utility if more fields require formatting.
 - Update `.env` whenever the API base URL changes.
 
@@ -88,18 +95,20 @@ Este projeto é uma aplicação React de página única criada com Vite. Ele dis
 
 ### Telas e Comportamento
 
-- **Seção de destaque** que apresenta o fluxo de cadastro e sinaliza que um novo registro pode ser criado imediatamente.
-- **Formulário em grid** com quatro campos controlados:
+- **Seção de destaque** apresenta o fluxo de cadastro e indica que um novo registro pode ser criado imediatamente.
+- **Formulário em grid** traz quatro campos controlados:
 	- `Nome completo` (`text`)
 	- `Data de nascimento` (`date`, limitada até a data atual)
 	- `CPF` (`text`, autoformatado como `000.000.000-00`)
 	- `E-mail` (`email`)
-- **Painel de submissão** exibindo um selo de confirmação e os dados informados após salvar.
+- **Navegação** permite alternar entre o layout moderno original (`/`) e a variação compacta em cartão branco (`/simple`) que compartilha a mesma integração com a API.
+- **Painel de submissão** exibe um selo de confirmação e os dados informados após salvar.
 
 ### Stack Tecnológica
 
 - Vite 5 com React 18 (`StrictMode` + `createRoot`).
 - Componentes funcionais e o hook `useState` controlam o estado local e os inputs.
+- Roteamento no cliente via `react-router-dom` viabiliza múltiplas variantes de formulário em rotas distintas.
 - CSS modular (`App.css`, `index.css`) define gradientes, camadas com blur, grid responsiva e estados de foco.
 
 ### Como Executar
@@ -109,20 +118,20 @@ npm install
 npm run dev
 ```
 
-Abra a URL informada pelo Vite (geralmente `http://localhost:5173`). Alterações dentro de `src/` recarregam automaticamente graças ao HMR.
+Abra a URL informada pelo Vite (geralmente `http://localhost:5173`). Alterações em `src/` recarregam automaticamente graças ao HMR.
 
 ### API Backend
 
 O formulário envia os dados para o projeto ASP.NET Core localizado em `../aspnetcore-api`.
 
-1. Configure as credenciais do MySQL em `aspnetcore-api/appsettings.Development.json` (`ConnectionStrings:DefaultConnection`).
-2. Restaure e execute a API com HTTPS habilitado (obrigatório para o front):
+1. Ajuste as credenciais do MySQL em `aspnetcore-api/appsettings.Development.json` (`ConnectionStrings:DefaultConnection`).
+2. Restaure e execute a API com HTTPS habilitado (requisito do frontend):
 	```powershell
 	cd ..\aspnetcore-api
 	dotnet restore
 	dotnet run --launch-profile https
 	```
-	Caso o executável fique bloqueado de execuções anteriores, finalize o processo antigo (Ctrl+C no terminal anterior) antes de rodar novamente.
+	Se o executável estiver bloqueado por uma execução anterior, finalize o processo antigo (Ctrl+C no terminal anterior) antes de executar novamente.
 3. Confirme a disponibilidade do Swagger em `https://localhost:7242/swagger` e mantenha o servidor ativo. Aceite o aviso de certificado na primeira visita, se aparecer.
 4. O app React lê o endpoint da API via `.env` (`VITE_API_BASE_URL`). Ajuste o valor caso a API rode em outra porta ou host e reinicie o `npm run dev` sempre que alterar o arquivo.
 
@@ -136,16 +145,21 @@ O formulário envia os dados para o projeto ASP.NET Core localizado em `../aspne
 
 ```
 src/
-	App.jsx      # Componente do formulário de cadastro
-	App.css      # Estilos específicos do formulário
-	main.jsx     # Bootstrap da aplicação (React + StrictMode)
-	index.css    # Tema global, fontes e resets
+	App.jsx                 # Shell com navegação e rotas
+	App.css                 # Estilos compartilhados entre as variantes
+	main.jsx                # Bootstrap (React + BrowserRouter)
+	hooks/
+		useRegistrationForm.js # Estado compartilhado + lógica de envio
+	pages/
+		ModernForm.jsx        # Layout glassmorphism
+		SimpleForm.jsx        # Layout compacto em cartão branco
+	index.css               # Tema global, fontes e resets
 ```
 
 ### Notas de Personalização
 
 - Ajuste tokens de layout (cores, bordas, grid) em `App.css` para refletir a identidade visual desejada.
-- Personalize o payload ou o tratamento da resposta em `App.jsx#handleSubmit` caso o contrato da API mude.
+- Personalize o payload ou o tratamento da resposta em `hooks/useRegistrationForm.js` caso o contrato da API mude.
 - A máscara de CPF roda no cliente; mova-a para uma utilidade compartilhada caso novos campos precisem de formatação similar.
 - Lembre-se de atualizar o `.env` sempre que o endpoint da API for alterado.
 

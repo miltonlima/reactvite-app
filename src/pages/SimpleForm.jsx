@@ -91,18 +91,21 @@ function SimpleForm() {
               />
             </label>
 
-            <label className="simple-field simple-field-full" htmlFor="description-simple">
-              <span>Descrição (opcional)</span>
-              <textarea
-                id="description-simple"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Observações adicionais"
-                maxLength={1000}
-                rows={4}
-              />
-            </label>
+            <div className="simple-field simple-field-full textarea-wrapper">
+              <label htmlFor="description-simple">
+                <span>Descrição (opcional)</span>
+                <textarea
+                  id="description-simple"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder="Observações adicionais"
+                  maxLength={1000}
+                  rows={4}
+                />
+                <small className="char-counter">{formData.description.length} / 1000</small>
+              </label>
+            </div>
           </div>
 
           <div className="simple-actions">

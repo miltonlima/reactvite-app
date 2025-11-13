@@ -86,7 +86,7 @@ function ModernForm() {
             />
           </div>
 
-          <div className="field field-full">
+          <div className="field field-full textarea-wrapper">
             <label htmlFor="description">Descrição (opcional)</label>
             <textarea
               id="description"
@@ -97,6 +97,7 @@ function ModernForm() {
               maxLength={1000}
               rows={4}
             />
+            <small className="char-counter">{formData.description.length} / 1000</small>
           </div>
         </div>
 

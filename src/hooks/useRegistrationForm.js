@@ -5,6 +5,7 @@ const initialFormState = {
   birthDate: '',
   cpf: '',
   email: '',
+  description: '',
 }
 
 const sanitizeCpf = (value) => value.replace(/\D/g, '').slice(0, 11)
@@ -52,6 +53,7 @@ export function useRegistrationForm() {
       birthDate: formData.birthDate,
       cpf: sanitizeCpf(formData.cpf),
       email: formData.email.trim(),
+      description: formData.description.trim() || null,
     }
 
     try {

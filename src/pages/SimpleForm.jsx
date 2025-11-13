@@ -90,6 +90,19 @@ function SimpleForm() {
                 required
               />
             </label>
+
+            <label className="simple-field simple-field-full" htmlFor="description-simple">
+              <span>Descrição (opcional)</span>
+              <textarea
+                id="description-simple"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Observações adicionais"
+                maxLength={1000}
+                rows={4}
+              />
+            </label>
           </div>
 
           <div className="simple-actions">
@@ -135,6 +148,10 @@ function SimpleForm() {
             <li>
               <strong>E-mail</strong>
               <span>{submitted.email}</span>
+            </li>
+            <li>
+              <strong>Descrição</strong>
+              <span>{submitted.description ? submitted.description : '—'}</span>
             </li>
             <li>
               <strong>Criado em</strong>

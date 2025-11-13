@@ -85,6 +85,19 @@ function ModernForm() {
               required
             />
           </div>
+
+          <div className="field field-full">
+            <label htmlFor="description">Descrição (opcional)</label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Observações adicionais sobre o cadastro"
+              maxLength={1000}
+              rows={4}
+            />
+          </div>
         </div>
 
         <div className="form-footer">
@@ -120,6 +133,10 @@ function ModernForm() {
             <li>
               <strong>E-mail:</strong>
               <span>{submitted.email}</span>
+            </li>
+            <li>
+              <strong>Descrição:</strong>
+              <span>{submitted.description ? submitted.description : '—'}</span>
             </li>
             <li>
               <strong>Criado em:</strong>

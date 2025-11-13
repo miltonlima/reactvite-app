@@ -30,6 +30,34 @@ export function useRegistrationsReport() {
     }
   }, [])
 
+  const updateRegistration = useCallback(async (id, payload) => {
+    const response = await fetch(`${API_BASE_URL}/api/registrations/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) {
+      let message = 'Falha ao atualizar o cadastro.'
+      const contentType = response.headers.get('content-type')
+      if (contentType && contentType.includes('application/json')) {
+        const body = await response.json()
+        if (body?.message) {
+          message = body.message
+        }
+      }
+      throw new Error(message)
+    }
+
+    const updated = await response.json()
+    setItems((prev) =>
+      prev.map((item) => (item.id === updated.id ? updated : item)),
+    )
+    return updated
+  }, [])
+
   useEffect(() => {
     fetchRegistrations()
   }, [fetchRegistrations])
@@ -39,5 +67,6 @@ export function useRegistrationsReport() {
     status,
     errorMessage,
     refresh: fetchRegistrations,
+    updateRegistration,
   }
 }

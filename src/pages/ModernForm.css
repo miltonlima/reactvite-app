@@ -1,0 +1,102 @@
+/* Modern theme styles for ModernForm */
+
+:root {
+  --modern-primary-color: #4f46e5;
+  --modern-secondary-color: #1e293b;
+  --modern-background: #f3f4f6;
+  --modern-text-color: #111827;
+  --modern-border-color: #d1d5db;
+  --modern-focus-color: #6366f1;
+}
+
+.modern-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--modern-background);
+  color: var(--modern-text-color);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modern-card {
+  width: 100%;
+  max-width: 600px;
+  background: #ffffff;
+  border: 1px solid var(--modern-border-color);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modern-card-header {
+  margin-bottom: 20px;
+}
+
+.modern-card-header h2 {
+  color: var(--modern-primary-color);
+}
+
+.modern-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.modern-field span {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.modern-field input,
+.modern-field textarea {
+  border: 1px solid var(--modern-border-color);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.modern-field input:focus,
+.modern-field textarea:focus {
+  border-color: var(--modern-focus-color);
+  box-shadow: 0 0 5px var(--modern-focus-color);
+}
+
+.modern-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.modern-actions button {
+  background-color: var(--modern-primary-color);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.modern-actions button:hover {
+  background-color: #4338ca;
+}
+
+.modern-summary {
+  margin-top: 30px;
+  padding: 15px;
+  border: 1px solid var(--modern-border-color);
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.modern-summary-header {
+  margin-bottom: 15px;
+}
+
+.modern-summary-header h3 {
+  color: var(--modern-primary-color);
+}

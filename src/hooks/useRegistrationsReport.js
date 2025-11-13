@@ -58,6 +58,22 @@ export function useRegistrationsReport() {
     return updated
   }, [])
 
+  const deleteRegistration = useCallback(async (id) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/registrations/${id}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Falha ao deletar o cadastro.')
+      }
+
+      setItems((prev) => prev.filter((item) => item.id !== id))
+    } catch (error) {
+      console.error('Erro ao deletar o cadastro:', error)
+    }
+  }, [])
+
   useEffect(() => {
     fetchRegistrations()
   }, [fetchRegistrations])
@@ -68,5 +84,6 @@ export function useRegistrationsReport() {
     errorMessage,
     refresh: fetchRegistrations,
     updateRegistration,
+    deleteRegistration,
   }
 }

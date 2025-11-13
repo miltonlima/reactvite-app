@@ -19,8 +19,9 @@ const summarize = (value) => {
 }
 
 function Reports() {
-  const { items, status, errorMessage, refresh, updateRegistration } = useRegistrationsReport()
+  const { items, status, errorMessage, refresh, updateRegistration, deleteRegistration } = useRegistrationsReport()
   const [editingRegistration, setEditingRegistration] = useState(null)
+  const [selectedId, setSelectedId] = useState(null)
 
   const hasData = items.length > 0
   const showEmpty = !hasData && status !== 'loading'
@@ -31,6 +32,11 @@ function Reports() {
 
   const handleClose = () => {
     setEditingRegistration(null)
+  }
+
+  const handleDelete = (id) => {
+    setSelectedId(id)
+    deleteRegistration(id)
   }
 
   return (
@@ -96,6 +102,13 @@ function Reports() {
                       onClick={() => handleEdit(item)}
                     >
                       Editar
+                    </button>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDelete(item.id)}
+                      disabled={status === 'submitting'}
+                    >
+                      {status === 'submitting' ? 'Apagando...' : 'Apagar'}
                     </button>
                   </td>
                 </tr>

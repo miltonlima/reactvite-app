@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { formatCpfForDisplay } from '../hooks/useRegistrationForm.js'
 import { useRegistrationsReport } from '../hooks/useRegistrationsReport.js'
 import EditRegistrationModal from './EditRegistrationModal.jsx'
+import './Reports.css'
 
 const formatDate = (value) => {
   if (!value) return '—'

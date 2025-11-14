@@ -1,0 +1,94 @@
+/* Compact theme styles for SimpleForm */
+
+.simple-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--simple-background, #0b1220);
+  color: var(--simple-text-color, #e6eef8);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.simple-card {
+  width: 100%;
+  max-width: 640px;
+  background: #ffffff;
+  border: 1px solid rgba(99,102,241,0.08);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 6px 14px rgba(2,6,23,0.08);
+}
+
+.simple-card-header {
+  margin-bottom: 18px;
+}
+
+.simple-card-header h2 {
+  color: var(--simple-primary-color, #6366f1);
+}
+
+.simple-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.simple-field span {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.simple-field input,
+.simple-field textarea {
+  border: 1px solid rgba(15,23,42,0.06);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.simple-field input:focus,
+.simple-field textarea:focus {
+  border-color: var(--simple-focus-color, #6366f1);
+  box-shadow: 0 0 6px rgba(99,102,241,0.12);
+}
+
+.simple-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.simple-actions button {
+  background-color: var(--simple-primary-color, #6366f1);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.simple-actions button:hover {
+  background-color: #4f46e5;
+}
+
+.simple-summary {
+  margin-top: 20px;
+  padding: 14px;
+  border: 1px solid rgba(15,23,42,0.06);
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.simple-summary-header {
+  margin-bottom: 12px;
+}
+
+.simple-summary-header h3 {
+  color: var(--simple-primary-color, #6366f1);
+}

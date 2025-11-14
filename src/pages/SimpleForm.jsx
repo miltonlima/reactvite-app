@@ -1,4 +1,5 @@
 import { formatCpfForDisplay, useRegistrationForm } from '../hooks/useRegistrationForm.js'
+import './SimpleForm.css'
 
 function SimpleForm() {
   const { formData, submitted, status, errorMessage, handleChange, handleSubmit, reset } =

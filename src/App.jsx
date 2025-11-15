@@ -8,8 +8,8 @@ import './App.css'
 
 function App() {
   return (
-    <div className="app-shell">
-      <header className="app-header">
+    <div className="app-layout">
+      <aside className="sidebar">
         <div className="brand">
           <span className="brand-badge">Form hub</span>
           <h1>Experiências de cadastro</h1>
@@ -61,17 +61,19 @@ function App() {
             Duplicado
           </NavLink>
         </nav>
-      </header>
+      </aside>
 
       <main className="content">
-        <Routes>
-          <Route path="/" element={<ModernForm />} />
-          <Route path="/simple" element={<SimpleForm />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/duplicate" element={<DuplicateForm />} />
-          <Route path="/new" element={<NewForm />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <div className="content-card">
+          <Routes>
+            <Route path="/" element={<ModernForm />} />
+            <Route path="/simple" element={<SimpleForm />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/duplicate" element={<DuplicateForm />} />
+            <Route path="/new" element={<NewForm />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </div>
       </main>
     </div>
   )

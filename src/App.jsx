@@ -2,6 +2,7 @@ import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import ModernForm from './pages/ModernForm.jsx'
 import Reports from './pages/Reports.jsx'
 import SimpleForm from './pages/SimpleForm.jsx'
+import DuplicateForm from './pages/DuplicateForm.jsx'
 import NewForm from './pages/NewForm.jsx'
 import './App.css'
 
@@ -51,6 +52,14 @@ function App() {
           >
             Novo formulário
           </NavLink>
+          <NavLink
+            to="/duplicate"
+            className={({ isActive }) =>
+              isActive ? 'nav-link nav-link-active' : 'nav-link'
+            }
+          >
+            Duplicado
+          </NavLink>
         </nav>
       </header>
 
@@ -59,6 +68,7 @@ function App() {
           <Route path="/" element={<ModernForm />} />
           <Route path="/simple" element={<SimpleForm />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/duplicate" element={<DuplicateForm />} />
           <Route path="/new" element={<NewForm />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

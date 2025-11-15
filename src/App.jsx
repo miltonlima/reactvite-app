@@ -61,6 +61,23 @@ function App() {
             Duplicado
           </NavLink>
         </nav>
+        <div className="sidebar-asset">
+          <svg
+            width="100%"
+            viewBox="0 0 210 140"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <rect width="210" height="140" rx="18" fill="url(#asset-gradient)" />
+            <defs>
+              <linearGradient id="asset-gradient" x1="105" y1="0" x2="105" y2="140" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#4338CA" />
+                <stop offset="1" stopColor="#6D28D9" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
       </aside>
 
       <main className="content">

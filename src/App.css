@@ -14,6 +14,7 @@
 .sidebar {
   display: flex;
   flex-direction: column;
+  height: calc(100vh - 7rem);
   gap: 1.5rem;
   background: rgba(15, 23, 42, 0.45);
   flex-shrink: 0;
@@ -82,6 +83,18 @@
   color: #0b1021;
   border-color: transparent;
   box-shadow: 0 14px 38px -18px rgba(99, 102, 241, 0.7);
+}
+
+.sidebar-asset {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(148, 163, 255, 0.2);
+}
+
+.sidebar-asset svg {
+  display: block;
+  opacity: 0.6;
+  filter: saturate(0.8);
 }
 
 .content {

@@ -65,7 +65,18 @@ export function useRegistrationsReport() {
       })
 
       if (!response.ok) {
-        throw new Error('Falha ao deletar o cadastro.')
+        let message = 'Falha ao deletar o cadastro.'
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          try {
+            const body = await response.json()
+            if (body?.message) message = body.message
+          } catch (e) {
+            // ignore parse errors
+          }
+        }
+        setErrorMessage(message)
+        throw new Error(message)
       }
 
       setItems((prev) => prev.filter((item) => item.id !== id))

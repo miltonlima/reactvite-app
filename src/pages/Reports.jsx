@@ -36,6 +36,11 @@ function Reports() {
   }
 
   const handleDelete = (id) => {
+    const ok = window.confirm(
+      'Tem certeza que deseja apagar este cadastro? Esta ação não pode ser desfeita.'
+    )
+    if (!ok) return
+
     setSelectedId(id)
     deleteRegistration(id)
   }

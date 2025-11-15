@@ -2,6 +2,7 @@ import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import ModernForm from './pages/ModernForm.jsx'
 import Reports from './pages/Reports.jsx'
 import SimpleForm from './pages/SimpleForm.jsx'
+import NewForm from './pages/NewForm.jsx'
 import './App.css'
 
 function App() {
@@ -42,6 +43,14 @@ function App() {
           >
             Relatório de cadastros
           </NavLink>
+          <NavLink
+            to="/new"
+            className={({ isActive }) =>
+              isActive ? 'nav-link nav-link-active' : 'nav-link'
+            }
+          >
+            Novo formulário
+          </NavLink>
         </nav>
       </header>
 
@@ -50,6 +59,7 @@ function App() {
           <Route path="/" element={<ModernForm />} />
           <Route path="/simple" element={<SimpleForm />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/new" element={<NewForm />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

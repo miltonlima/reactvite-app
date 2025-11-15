@@ -1,0 +1,93 @@
+/* Styles for the separate NewForm page */
+.new-form-layout {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.new-form-card {
+  width: 100%;
+  max-width: 720px;
+  /* darker card for a less bright UI */
+  background: linear-gradient(180deg,#071022,#0b1220);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 12px 36px rgba(2,6,23,0.55);
+  color: #e6eef8; /* light text on dark card */
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.new-form-header h2 {
+  margin: 0 0 6px 0;
+  color: #2563eb;
+}
+
+.new-form-header p {
+  margin: 0 0 12px 0;
+  color: rgba(15,23,42,0.7);
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.field input,
+.field textarea {
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 10px;
+  background: rgba(255,255,255,0.02);
+  color: #e6eef8;
+}
+
+.new-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.new-actions button {
+  background: linear-gradient(180deg,#3b82f6,#2563eb);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(37,99,235,0.18);
+}
+
+.new-actions button.secondary {
+  background: transparent;
+  color: #9fbffb;
+  border: 1px solid rgba(159,191,251,0.06);
+}
+
+.form-error {
+  color: #b91c1c;
+  margin-top: 10px;
+}
+
+.new-summary {
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.03);
+  color: #dbeafe;
+}
+
+@media (max-width: 680px) {
+  .fields-grid { grid-template-columns: 1fr; }
+}

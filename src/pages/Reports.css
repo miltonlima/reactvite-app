@@ -5,28 +5,60 @@
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  background-color: var(--reports-background, #0b1220);
-  color: var(--reports-text-color, #e6eef8);
+  background-color: var(--reports-background, #081226);
+  /* ensure all words on this page are white by default */
+  color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .reports-header {
   margin-bottom: 20px;
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .reports-header h2 {
-  color: var(--reports-primary-color, #60a5fa);
+  color: #ffffff;
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.reports-badge {
+  background: linear-gradient(90deg,#2b6cb0,#60a5fa);
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.reports-header > div {
+  background: rgba(255,255,255,0.02);
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+.reports-header p {
+  margin: 6px 0 0 0;
+  color: rgba(255,255,255,0.85);
 }
 
 .reports-table-wrapper {
   width: 100%;
   max-width: 900px;
-  background: #ffffff;
-  border: 1px solid rgba(59, 130, 246, 0.12);
+  /* darker wrapper so page is less bright */
+  background: linear-gradient(180deg,#071022,#081226);
+  border: 1px solid rgba(255,255,255,0.04);
   border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 6px 18px rgba(14, 165, 233, 0.06);
+  padding: 12px;
+  box-shadow: 0 18px 40px rgba(2,6,23,0.55);
+  color: #ffffff;
 }
 
 .reports-table {
@@ -35,57 +67,211 @@
   font-size: 0.95rem;
 }
 
+.reports-table thead {
+  /* keep header visually aligned with card rows */
+  display: block;
+}
+
 .reports-table th,
 .reports-table td {
-  padding: 10px 12px;
+  padding: 10px 14px;
   text-align: left;
-  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  /* force white text for table cells and headings */
+  color: #ffffff;
+}
+
+/* render rows as cards using grid so layout matches the screenshot */
+.reports-table tbody {
+  display: block;
+  margin-top: 8px;
+}
+
+.reports-table tbody tr {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr 1fr 1.6fr 3fr 1.2fr 160px;
+  gap: 12px;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(6,12,24,0.9), rgba(4,8,18,0.88));
+  color: rgba(240, 244, 255, 0.98);
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  border-left: 4px solid rgba(96,165,250,0.14);
+  box-shadow: 0 18px 42px rgba(2,6,23,0.6);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.reports-table thead tr {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr 1fr 1.6fr 3fr 1.2fr 160px;
+  gap: 12px;
 }
 
 .reports-table thead th {
-  background: linear-gradient(90deg, rgba(59,130,246,0.12), rgba(99,102,241,0.06));
-  color: #0f172a;
-  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
 }
 
 .reports-table tbody tr:hover {
-  background: rgba(99, 102, 241, 0.03);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 20px 40px rgba(2,6,23,0.55);
 }
 
 .reports-actions {
   display: flex;
   gap: 8px;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .reports-action {
-  background-color: #2563eb;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 6px 10px;
+  background-color: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 999px;
+  padding: 8px 14px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.12s ease, transform 0.12s ease;
+  box-shadow: 0 6px 16px rgba(2,6,23,0.25) inset;
 }
 
 .reports-action:hover {
-  background-color: #1e40af;
+  background-color: rgba(124,193,255,0.14);
+  transform: translateY(-2px);
 }
 
 .delete-button {
-  background-color: #ef4444;
+  background: linear-gradient(180deg,#f87171,#ef4444);
   color: #fff;
   border: none;
-  border-radius: 8px;
-  padding: 6px 10px;
+  border-radius: 10px;
+  padding: 8px 12px;
   cursor: pointer;
+  box-shadow: 0 8px 20px rgba(239,68,68,0.18);
 }
 
 .delete-button:hover {
-  background-color: #dc2626;
+  background: linear-gradient(180deg,#fb6b6b,#dc2626);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(220,38,38,0.22);
 }
 
 .reports-empty {
   margin-top: 20px;
-  color: rgba(240, 244, 255, 0.9);
+  color: #ffffff;
+}
+
+/* column content behaviour */
+.reports-table td:nth-child(1) { /* Nome */
+  font-weight: 800;
+  white-space: normal;
+  font-size: 1.02rem;
+  letter-spacing: 0.01em;
+}
+
+.reports-table td {
+  color: #ffffff;
+}
+
+.reports-table td:nth-child(3),
+.reports-table td:nth-child(4) { /* CPF, E-mail */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reports-table td:nth-child(5) { /* Descrição */
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 0.95rem;
+}
+
+.reports-table td:nth-child(6) { /* Criado em */
+  white-space: nowrap;
+}
+
+/* Responsive: collapse to single column on small screens */
+@media (max-width: 900px) {
+  .reports-table thead tr,
+  .reports-table tbody tr {
+    grid-template-columns: 1fr 140px 120px 1fr 1fr 140px 120px;
+  }
+}
+
+/* Modal / detail overrides (modal rendered by EditRegistrationModal) */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2,6,23,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 720px;
+  background: linear-gradient(180deg,#071022,#0b1220);
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: 18px;
+  border-radius: 12px;
+  color: #ffffff;
+  box-shadow: 0 20px 60px rgba(2,6,23,0.7);
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #ffffff;
+}
+
+.modal-form input,
+.modal-form textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color: #ffffff;
+}
+
+.modal-actions button {
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+}
+
+@media (max-width: 640px) {
+  .reports-table thead,
+  .reports-table tbody {
+    display: block;
+  }
+  .reports-table thead tr {
+    display: none; /* hide header for very small screens */
+  }
+  .reports-table tbody tr {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .reports-table td {
+    display: block;
+    width: 100%;
+  }
+  .reports-actions { justify-content: flex-start; }
 }

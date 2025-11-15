@@ -14,11 +14,13 @@
 .simple-card {
   width: 100%;
   max-width: 640px;
-  background: #ffffff;
-  border: 1px solid rgba(99,102,241,0.08);
+  /* darker card variant */
+  background: linear-gradient(180deg,#071022,#081224);
+  border: 1px solid rgba(255,255,255,0.04);
   border-radius: 12px;
   padding: 18px;
-  box-shadow: 0 6px 14px rgba(2,6,23,0.08);
+  box-shadow: 0 10px 26px rgba(2,6,23,0.45);
+  color: var(--simple-text-color, #e6eef8);
 }
 
 .simple-card-header {
@@ -42,11 +44,13 @@
 
 .simple-field input,
 .simple-field textarea {
-  border: 1px solid rgba(15,23,42,0.06);
+  border: 1px solid rgba(255,255,255,0.06);
   border-radius: 8px;
   padding: 10px;
   font-size: 1rem;
   transition: border-color 0.3s, box-shadow 0.3s;
+  background: rgba(255,255,255,0.02);
+  color: var(--simple-text-color, #e6eef8);
 }
 
 .simple-field input:focus,
@@ -80,9 +84,10 @@
 .simple-summary {
   margin-top: 20px;
   padding: 14px;
-  border: 1px solid rgba(15,23,42,0.06);
+  border: 1px solid rgba(255,255,255,0.03);
   border-radius: 8px;
-  background-color: #ffffff;
+  background-color: rgba(255,255,255,0.02);
+  color: #e6eef8;
 }
 
 .simple-summary-header {

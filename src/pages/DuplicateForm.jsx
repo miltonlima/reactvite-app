@@ -7,8 +7,8 @@ function DuplicateForm() {
   return (
     <section className="modern-form">
       <header className="hero">
-        <span className="badge">Formulário Duplicado1</span>
-        <h2>Página Duplicada1234567890</h2>
+        <span className="badge">Formulário Duplicado</span>
+        <h2>Página Duplicada</h2>
         <p>
           Esta é uma cópia da página de formulário moderno, acessível por uma nova rota.
         </p>

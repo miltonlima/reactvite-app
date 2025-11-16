@@ -1,23 +1,31 @@
+import { useState } from 'react'
 import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import ModernForm from './pages/ModernForm.jsx'
 import Reports from './pages/Reports.jsx'
 import SimpleForm from './pages/SimpleForm.jsx'
 import DuplicateForm from './pages/DuplicateForm.jsx'
 import NewForm from './pages/NewForm.jsx'
+import Login from './pages/Login.jsx'
 import './App.css'
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  const handleLogin = () => {
+    setIsLoggedIn(true)
+  }
+
+  if (!isLoggedIn) {
+    return <Login onLogin={handleLogin} />
+  }
+
+  return <MainApp />
+}
+
+function MainApp() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <div className="brand">
-          <span className="brand-badge">Form hub</span>
-          <h1>Experiências de cadastro</h1>
-          <p>
-            Altere entre layouts para avaliar diferentes abordagens de UX sem
-            mudar a integração com a API ASP.NET Core.
-          </p>
-        </div>
         <nav className="nav-links" aria-label="Variações de formulário">
           <NavLink
             to="/"
@@ -80,3 +88,4 @@ function App() {
 }
 
 export default App
+

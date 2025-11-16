@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom'
 import ModernForm from './pages/ModernForm.jsx'
 import Reports from './pages/Reports.jsx'
 import SimpleForm from './pages/SimpleForm.jsx'
@@ -8,27 +8,53 @@ import NewForm from './pages/NewForm.jsx'
 import Login from './pages/Login.jsx'
 import './App.css'
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-
-  const handleLogin = () => {
-    setIsLoggedIn(true)
-  }
-
+function ProtectedRoute({ isLoggedIn, children }) {
   if (!isLoggedIn) {
-    return <Login onLogin={handleLogin} />
+    return <Navigate to="/login" replace />
   }
-
-  return <MainApp />
+  return children
 }
 
-function MainApp() {
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true')
+  const navigate = useNavigate()
+
+  const handleLogin = () => {
+    localStorage.setItem('isLoggedIn', 'true')
+    setIsLoggedIn(true)
+    navigate('/app')
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn')
+    setIsLoggedIn(false)
+    navigate('/login')
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={isLoggedIn ? <Navigate to="/app" replace /> : <Navigate to="/login" replace />} />
+      <Route path="/login" element={isLoggedIn ? <Navigate to="/app" replace /> : <Login onLogin={handleLogin} />} />
+      <Route
+        path="/app/*"
+        element={
+          <ProtectedRoute isLoggedIn={isLoggedIn}>
+            <MainApp onLogout={handleLogout} />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  )
+}
+
+function MainApp({ onLogout }) {
   return (
     <div className="app-shell">
       <header className="app-header">
         <nav className="nav-links" aria-label="Variações de formulário">
           <NavLink
-            to="/"
+            to="/app"
             end
             className={({ isActive }) =>
               isActive ? 'nav-link nav-link-active' : 'nav-link'
@@ -37,7 +63,7 @@ function MainApp() {
             Formulário moderno
           </NavLink>
           <NavLink
-            to="/simple"
+            to="simple"
             className={({ isActive }) =>
               isActive ? 'nav-link nav-link-active' : 'nav-link'
             }
@@ -45,7 +71,7 @@ function MainApp() {
             Formulário compacto
           </NavLink>
           <NavLink
-            to="/reports"
+            to="reports"
             className={({ isActive }) =>
               isActive ? 'nav-link nav-link-active' : 'nav-link'
             }
@@ -53,7 +79,7 @@ function MainApp() {
             Relatório de cadastros
           </NavLink>
           <NavLink
-            to="/new"
+            to="new"
             className={({ isActive }) =>
               isActive ? 'nav-link nav-link-active' : 'nav-link'
             }
@@ -61,7 +87,7 @@ function MainApp() {
             Novo formulário
           </NavLink>
           <NavLink
-            to="/duplicate"
+            to="duplicate"
             className={({ isActive }) =>
               isActive ? 'nav-link nav-link-active' : 'nav-link'
             }
@@ -69,17 +95,18 @@ function MainApp() {
             Duplicado
           </NavLink>
         </nav>
+        <button onClick={onLogout} className="logout-button">Logout</button>
       </header>
 
       <main className="content">
         <div className="content-card">
           <Routes>
-            <Route path="/" element={<ModernForm />} />
-            <Route path="/simple" element={<SimpleForm />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/duplicate" element={<DuplicateForm />} />
-            <Route path="/new" element={<NewForm />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route index element={<ModernForm />} />
+            <Route path="simple" element={<SimpleForm />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="duplicate" element={<DuplicateForm />} />
+            <Route path="new" element={<NewForm />} />
+            <Route path="*" element={<Navigate to="/app" replace />} />
           </Routes>
         </div>
       </main>
@@ -88,4 +115,3 @@ function MainApp() {
 }
 
 export default App
-

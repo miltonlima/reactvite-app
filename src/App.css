@@ -4,17 +4,16 @@
   padding: 3.5rem 1.5rem;
 }
 
-.app-layout {
+.app-shell {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 2.75rem;
 }
 
-.sidebar {
+.app-header {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 7rem);
+  text-align: center;
   gap: 1.5rem;
   background: rgba(15, 23, 42, 0.45);
   flex-shrink: 0;
@@ -25,7 +24,8 @@
 }
 
 .brand {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.75rem;
 }
 
@@ -55,9 +55,10 @@
 
 .nav-links {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 0.75rem;
-  align-items: stretch;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-link {
@@ -85,21 +86,10 @@
   box-shadow: 0 14px 38px -18px rgba(99, 102, 241, 0.7);
 }
 
-.sidebar-asset {
-  margin-top: auto;
-  padding-top: 1.5rem;
-  border-top: 1px solid rgba(148, 163, 255, 0.2);
-}
-
-.sidebar-asset svg {
-  display: block;
-  opacity: 0.6;
-  filter: saturate(0.8);
-}
-
 .content {
   display: flex;
   flex-grow: 1;
+  width: 100%;
 }
 
 .content-card {
@@ -115,6 +105,19 @@
   .content-card {
     backdrop-filter: blur(16px);
   }
+}
+
+.textarea-wrapper {
+  position: relative;
+}
+
+.char-counter {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  pointer-events: none;
 }
 
 .modern-form {
@@ -985,5 +988,12 @@
 
   .hero p {
     margin-left: 0;
+  }
+
+  .app-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
   }
 }

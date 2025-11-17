@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
-import { Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom'
+import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import ModernForm from './pages/ModernForm.jsx'
 import Reports from './pages/Reports.jsx'
 import SimpleForm from './pages/SimpleForm.jsx'
 import DuplicateForm from './pages/DuplicateForm.jsx'
 import NewForm from './pages/NewForm.jsx'
 import Login from './pages/Login.jsx'
+import { useAuth } from './hooks/useAuth.js'
 import './App.css'
 
 function ProtectedRoute({ isLoggedIn, children }) {
@@ -16,20 +16,7 @@ function ProtectedRoute({ isLoggedIn, children }) {
 }
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true')
-  const navigate = useNavigate()
-
-  const handleLogin = () => {
-    localStorage.setItem('isLoggedIn', 'true')
-    setIsLoggedIn(true)
-    navigate('/app')
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn')
-    setIsLoggedIn(false)
-    navigate('/login')
-  }
+  const { isLoggedIn, handleLogin, handleLogout } = useAuth()
 
   return (
     <Routes>

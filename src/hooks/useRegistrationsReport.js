@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useAuth } from './useAuth'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://localhost:7242'
 
@@ -6,13 +7,18 @@ export function useRegistrationsReport() {
   const [items, setItems] = useState([])
   const [status, setStatus] = useState('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const { token } = useAuth()
 
   const fetchRegistrations = useCallback(async () => {
     setStatus('loading')
     setErrorMessage('')
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/registrations`)
+      const response = await fetch(`${API_BASE_URL}/api/registrations`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
       if (!response.ok) {
         throw new Error('Falha ao carregar os cadastros.')
       }
@@ -28,13 +34,14 @@ export function useRegistrationsReport() {
           : 'Ocorreu um erro inesperado ao gerar o relatório.',
       )
     }
-  }, [])
+  }, [token])
 
   const updateRegistration = useCallback(async (id, payload) => {
     const response = await fetch(`${API_BASE_URL}/api/registrations/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(payload),
     })
@@ -56,12 +63,15 @@ export function useRegistrationsReport() {
       prev.map((item) => (item.id === updated.id ? updated : item)),
     )
     return updated
-  }, [])
+  }, [token])
 
   const deleteRegistration = useCallback(async (id) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/registrations/${id}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       })
 
       if (!response.ok) {
@@ -83,11 +93,13 @@ export function useRegistrationsReport() {
     } catch (error) {
       console.error('Erro ao deletar o cadastro:', error)
     }
-  }, [])
+  }, [token])
 
   useEffect(() => {
-    fetchRegistrations()
-  }, [fetchRegistrations])
+    if (token) {
+      fetchRegistrations()
+    }
+  }, [fetchRegistrations, token])
 
   return {
     items,

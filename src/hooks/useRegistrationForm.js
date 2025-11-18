@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useAuth } from './useAuth'
 
 const initialFormState = {
   name: '',
@@ -25,6 +26,7 @@ export function useRegistrationForm() {
   const [submitted, setSubmitted] = useState(null)
   const [status, setStatus] = useState('idle')
   const [errorMessage, setErrorMessage] = useState('')
+  const { token } = useAuth()
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -61,6 +63,7 @@ export function useRegistrationForm() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(payload),
       })

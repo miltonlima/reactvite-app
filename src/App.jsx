@@ -2,31 +2,33 @@ import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import ModernForm from './pages/ModernForm.jsx'
 import Reports from './pages/Reports.jsx'
 import SimpleForm from './pages/SimpleForm.jsx'
-import DuplicateForm from './pages/DuplicateForm.jsx'
-import NewForm from './pages/NewForm.jsx'
-import Login from './pages/Login.jsx'
+import LoginPage from './pages/LoginPage.jsx'
+import RegisterPage from './pages/RegisterPage.jsx'
 import { useAuth } from './hooks/useAuth.js'
 import './App.css'
 
-function ProtectedRoute({ isLoggedIn, children }) {
-  if (!isLoggedIn) {
+function ProtectedRoute({ children }) {
+  const { token } = useAuth();
+
+  if (!token) {
     return <Navigate to="/login" replace />
   }
   return children
 }
 
 function App() {
-  const { isLoggedIn, handleLogin, handleLogout } = useAuth()
+  const { token, logout } = useAuth()
 
   return (
     <Routes>
-      <Route path="/" element={isLoggedIn ? <Navigate to="/app" replace /> : <Navigate to="/login" replace />} />
-      <Route path="/login" element={isLoggedIn ? <Navigate to="/app" replace /> : <Login onLogin={handleLogin} />} />
+      <Route path="/" element={!token ? <Navigate to="/login" replace /> : <Navigate to="/app" replace />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
       <Route
         path="/app/*"
         element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
-            <MainApp onLogout={handleLogout} />
+          <ProtectedRoute>
+            <MainApp onLogout={logout} />
           </ProtectedRoute>
         }
       />
@@ -65,22 +67,6 @@ function MainApp({ onLogout }) {
           >
             Relatório de cadastros
           </NavLink>
-          <NavLink
-            to="new"
-            className={({ isActive }) =>
-              isActive ? 'nav-link nav-link-active' : 'nav-link'
-            }
-          >
-            Novo formulário
-          </NavLink>
-          <NavLink
-            to="duplicate"
-            className={({ isActive }) =>
-              isActive ? 'nav-link nav-link-active' : 'nav-link'
-            }
-          >
-            Duplicado
-          </NavLink>
         </nav>
         <button onClick={onLogout} className="logout-button">Logout</button>
       </header>
@@ -91,8 +77,6 @@ function MainApp({ onLogout }) {
             <Route index element={<ModernForm />} />
             <Route path="simple" element={<SimpleForm />} />
             <Route path="reports" element={<Reports />} />
-            <Route path="duplicate" element={<DuplicateForm />} />
-            <Route path="new" element={<NewForm />} />
             <Route path="*" element={<Navigate to="/app" replace />} />
           </Routes>
         </div>

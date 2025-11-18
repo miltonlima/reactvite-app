@@ -1,75 +1,57 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import api from '../services/api';
 
 const AuthContext = createContext();
 
-const AuthProvider = ({ children }) => {
-    const [token, setToken] = useState(localStorage.getItem('token'));
-    const [user, setUser] = useState(null);
+export const AuthProvider = ({ children }) => {
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (token) {
-            try {
-                const decoded = jwtDecode(token);
-                setUser(decoded);
-                localStorage.setItem('token', token);
-            } catch (error) {
-                console.error('Invalid token');
-                setToken(null);
-                setUser(null);
-                localStorage.removeItem('token');
-            }
-        } else {
-            localStorage.removeItem('token');
-        }
-    }, [token]);
+  useEffect(() => {
+    if (token) {
+      api.defaults.headers.Authorization = `Bearer ${token}`;
+      // Here you could fetch user data if you have an endpoint for it
+      // For now, we'll just assume the user is authenticated if there's a token
+      setUser({ authenticated: true }); 
+    }
+    setLoading(false);
+  }, [token]);
 
-    const login = async (username, password) => {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }),
-        });
+  const login = async (username, password) => {
+    try {
+      const { data } = await api.post('/login', { username, password });
+      setToken(data.token);
+      localStorage.setItem('token', data.token);
+      api.defaults.headers.Authorization = `Bearer ${data.token}`;
+      setUser({ authenticated: true });
+    } catch (error) {
+      console.error('Login failed', error);
+      throw error;
+    }
+  };
 
-        if (response.ok) {
-            const { token } = await response.json();
-            setToken(token);
-        } else {
-            // Handle error
-            console.error('Login failed');
-        }
-    };
+  const register = async (userData) => {
+    try {
+      await api.post('/registrations', userData);
+    } catch (error) {
+      console.error('Registration failed', error);
+      throw error;
+    }
+  };
 
-    const register = async (username, password) => {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }),
-        });
+  const logout = () => {
+    setToken(null);
+    setUser(null);
+    localStorage.removeItem('token');
+    delete api.defaults.headers.Authorization;
+  };
 
-        if (response.ok) {
-            // Handle successful registration
-            console.log('Registration successful');
-        } else {
-            // Handle error
-            console.error('Registration failed');
-        }
-    };
-
-    const logout = () => {
-        setToken(null);
-        setUser(null);
-    };
-
-    return (
-        <AuthContext.Provider value={{ token, user, login, logout, register }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ token, user, login, register, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-export { AuthContext, AuthProvider };
+export default AuthContext;

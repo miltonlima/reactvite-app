@@ -20,7 +20,8 @@ const RegisterPage = () => {
       await register({ name, email, password, cpf, birthDate, description });
       navigate('/login');
     } catch (err) {
-      setError('Failed to register. Please try again.');
+      const errorMessage = err.response?.data?.message || 'Failed to register. Please try again.';
+      setError(errorMessage);
     }
   };
 

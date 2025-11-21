@@ -1,14 +1,10 @@
 import React from 'react';
-import useAuth from '../hooks/useAuth';
 
 const DashboardPage = () => {
-  const { logout } = useAuth();
-
   return (
     <div>
       <h2>Dashboard</h2>
-      <p>Welcome to your dashboard!</p>
-      <button onClick={logout}>Logout</button>
+      <p>Bem-vindo ao seu painel! Use o menu de navegação acima para explorar as seções.</p>
     </div>
   );
 };

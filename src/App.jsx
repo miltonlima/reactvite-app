@@ -11,9 +11,9 @@ import './App.css';
 function App() {
   return (
     <Routes>
+      <Route path="/" element={<LoginPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/" element={<Navigate to="/login" replace />} />
 
       {/* Protected Routes */}
       <Route
@@ -30,7 +30,7 @@ function App() {
         <Route path="new-registration" element={<NewForm />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/login" />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }

@@ -1,4 +1,4 @@
-# React Vite Registration Form / Formulário React Vite
+# React Vite CRUD / CRUD com React e Vite
 
 Multilingual README: English first, Português logo abaixo.
 
@@ -8,84 +8,95 @@ Multilingual README: English first, Português logo abaixo.
 
 ### Overview
 
-This project is a single-page React application bootstrapped with Vite. It delivers a modern registration form that collects a person's full name, birth date, CPF and email. The user experience embraces a glassmorphism-inspired layout, client-side validation and real-time CPF formatting.
+This project is a single-page React application bootstrapped with Vite, featuring a complete CRUD (Create, Read, Update, Delete) system for user registrations. It includes user authentication (login/register), protected routes, and a dashboard to manage records. The application connects to an ASP.NET Core backend API to persist data.
 
-### Screens & Behavior
+### Features
 
-- **Hero section** introducing the registration flow and highlighting that the form is ready for new records.
-- **Form grid** with four controlled inputs:
-	- `Full name` (`text`)
-	- `Birth date` (`date`, capped at the current day)
-	- `CPF` (`text`, auto-formatted as `000.000.000-00`)
-	- `Email` (`email`)
-- **Navigation** toggles between the original modern layout (`/`) and a compact white-card variation (`/simple`) while reusing the same backend integration.
-- **Navigation** toggles between the modern layout (`/`), the compact white-card variation (`/simple`), and a reporting view (`/reports`) that lists all saved registrations.
-- **Submission panel** showing a confirmation badge and the captured data once the form is submitted.
+- **User Authentication**: Secure login and registration pages.
+- **Protected Routes**: Dashboard and reporting pages are only accessible to authenticated users.
+- **Dashboard**: A central hub for authenticated users.
+- **CRUD Operations**:
+    - **Create**: Register new users through multiple form styles.
+    - **Read**: View all registrations in a detailed report table.
+    - **Update**: Edit existing registrations via a modal form.
+    - **Delete**: Remove registrations from the system.
+- **Modern UI**:
+    - Glassmorphism-inspired and simple card-based form layouts.
+    - Client-side validation and real-time CPF formatting.
+    - Responsive design for various screen sizes.
 
 ### Tech Stack
 
-- Vite 5 with React 18 (`StrictMode` + `createRoot`).
-- Functional components and the `useState` hook manage local state and input control.
-- Client-side routing with `react-router-dom` hosts multiple form variants on dedicated routes.
-- CSS modules (`App.css`, `index.css`) define gradients, blur layers, responsive grid and focus states.
+- Vite 5 with React 18 (`StrictMode`).
+- **Routing**: `react-router-dom` for navigation and protected routes.
+- **State Management**: React Hooks (`useState`, `useContext`) and custom hooks for modular logic (`useAuth`, `useRegistrationsReport`).
+- **Authentication**: JWT-based authentication with state managed by `AuthContext`.
+- **API Communication**: `axios` instance for making RESTful API calls to the backend.
+- **Styling**: CSS Modules and global stylesheets for a flexible and maintainable design.
 
 ### Getting Started
 
-```bash
-npm install
-npm run dev
-```
-
-Open the URL provided by Vite (usually `http://localhost:5173`). Edits under `src/` hot-reload instantly thanks to Vite's HMR pipeline.
+1.  Clone the repository.
+2.  Install the dependencies:
+    ```bash
+    npm install
+    ```
+3.  Set up the backend API (see Backend API section).
+4.  Create a `.env` file in the root of the project and add the API base URL:
+    ```
+    VITE_API_BASE_URL=https://localhost:7242
+    ```
+    *Adjust the port if your backend runs on a different one.*
+5.  Run the development server:
+    ```bash
+    npm run dev
+    ```
+Open the URL provided by Vite (usually `http://localhost:5173`).
 
 ### Backend API
 
-The form submits to the companion ASP.NET Core project located at `../aspnetcore-api`.
+The application requires the companion ASP.NET Core project located at `../aspnetcore-api`.
 
-1. Configure MySQL credentials inside `aspnetcore-api/appsettings.Development.json` (`ConnectionStrings:DefaultConnection`).
-2. Restore and run the API with HTTPS enabled (required by the frontend):
-	```powershell
-	cd ..\aspnetcore-api
-	dotnet restore
-	dotnet run --launch-profile https
-	```
-	If the binary is locked from a previous run, finalize the old process first (Ctrl+C no terminal antigo).
-3. Confirm the Swagger UI is available at `https://localhost:7242/swagger` and keep the server running. Accept the certificate warning the first time if prompted.
-4. The React app reads the API base URL from `.env` (`VITE_API_BASE_URL`). Adjust this value if the backend runs on a different host or port. Remember to restart `npm run dev` whenever `.env` changes.
+1.  **Configure**: Set your MySQL credentials in `aspnetcore-api/appsettings.Development.json`.
+2.  **Run**: Restore and run the API with HTTPS enabled:
+    ```powershell
+    cd ..\aspnetcore-api
+    dotnet restore
+    dotnet run --launch-profile https
+    ```
+3.  **Verify**: Ensure the Swagger UI is available at `https://localhost:7242/swagger` and keep the server running.
 
 ### Available Scripts
 
-- `npm run dev` – start the development server with hot module replacement.
-- `npm run build` – build the production bundle in `dist/`.
-- `npm run preview` – serve the production bundle locally for smoke testing.
+-   `npm run dev`: Starts the development server with Hot Module Replacement.
+-   `npm run build`: Bundles the app for production into the `dist/` directory.
+-   `npm run preview`: Serves the production bundle locally for testing.
 
-### Project Structure (excerpt)
+### Project Structure
 
 ```
 src/
-	App.jsx                 # Application shell with navigation and routes
-	App.css                 # Shared styling for the form variants
-	main.jsx                # Application bootstrap (React + BrowserRouter)
-	hooks/
-		useRegistrationForm.js # Shared state + submission workflow
-	pages/
-		ModernForm.jsx        # Glassmorphism-inspired layout
-		SimpleForm.jsx        # Compact white-card layout
-		Reports.jsx           # Registrations report table
-	index.css               # Global theme, fonts and resets
+├── assets/                  # Static assets
+├── components/              # Shared components (e.g., ProtectedRoute)
+│   └── ProtectedRoute.jsx
+├── context/                 # React context providers (e.g., AuthContext)
+│   └── AuthContext.jsx
+├── hooks/                   # Custom hooks for state and logic
+│   ├── useAuth.js
+│   └── useRegistrationsReport.js
+├── pages/                   # Top-level page components
+│   ├── DashboardPage.jsx
+│   ├── EditRegistrationModal.jsx
+│   ├── LoginPage.jsx
+│   ├── RegisterPage.jsx
+│   └── Reports.jsx
+├── services/                # API communication layer
+│   └── api.js
+├── App.css                  # Main application styles
+├── App.jsx                  # Root component with routing
+├── index.css                # Global styles and resets
+└── main.jsx                 # Application entry point
 ```
-
-### Customization Notes
-
-- Adjust layout tokens (colors, radii, grid) inside `App.css` to reflect your brand.
-- Customize the payload or response handling in `hooks/useRegistrationForm.js` if your API contract changes.
-- Input masking currently handles CPF client-side; move it to a shared utility if more fields require formatting.
-- Update `.env` whenever the API base URL changes.
-
-### Requirements
-
-- Node.js LTS (18+ recommended)
-- npm 9+ (or pnpm/yarn with equivalent scripts)
 
 ---
 
@@ -93,80 +104,92 @@ src/
 
 ### Visão Geral
 
-Este projeto é uma aplicação React de página única criada com Vite. Ele disponibiliza um formulário moderno para registrar o nome completo, data de nascimento, CPF e e-mail de uma pessoa, com layout estilo glassmorphism, validações no cliente e formatação de CPF em tempo real.
+Este projeto é uma aplicação React de página única (SPA) criada com Vite, apresentando um sistema CRUD (Create, Read, Update, Delete) completo para cadastros de usuários. Inclui autenticação de usuário (login/registro), rotas protegidas e um painel para gerenciar os registros. A aplicação se conecta a uma API backend ASP.NET Core para persistir os dados.
 
-### Telas e Comportamento
+### Funcionalidades
 
-- **Seção de destaque** apresenta o fluxo de cadastro e indica que um novo registro pode ser criado imediatamente.
-- **Formulário em grid** traz quatro campos controlados:
-	- `Nome completo` (`text`)
-	- `Data de nascimento` (`date`, limitada até a data atual)
-	- `CPF` (`text`, autoformatado como `000.000.000-00`)
-	- `E-mail` (`email`)
-- **Navegação** permite alternar entre o layout moderno original (`/`), a variação compacta em cartão branco (`/simple`) e o relatório de cadastros (`/reports`) que exibe todos os registros.
-- **Painel de submissão** exibe um selo de confirmação e os dados informados após salvar.
+- **Autenticação de Usuário**: Páginas seguras de login and registro.
+- **Rotas Protegidas**: O painel e as páginas de relatório são acessíveis apenas para usuários autenticados.
+- **Dashboard**: Um hub central para usuários autenticados.
+- **Operações CRUD**:
+    - **Criar**: Registre novos usuários através de múltiplos estilos de formulário.
+    - **Ler**: Visualize todos os registros em uma tabela de relatório detalhada.
+    - **Atualizar**: Edite registros existentes através de um formulário modal.
+    - **Deletar**: Remova registros do sistema.
+- **UI Moderna**:
+    - Layouts de formulário inspirados em Glassmorphism e baseados em cartões simples.
+    - Validação no lado do cliente e formatação de CPF em tempo real.
+    - Design responsivo para vários tamanhos de tela.
 
 ### Stack Tecnológica
 
-- Vite 5 com React 18 (`StrictMode` + `createRoot`).
-- Componentes funcionais e o hook `useState` controlam o estado local e os inputs.
-- Roteamento no cliente via `react-router-dom` viabiliza múltiplas variantes de formulário em rotas distintas.
-- CSS modular (`App.css`, `index.css`) define gradientes, camadas com blur, grid responsiva e estados de foco.
+- Vite 5 com React 18 (`StrictMode`).
+- **Roteamento**: `react-router-dom` para navegação e rotas protegidas.
+- **Gerenciamento de Estado**: React Hooks (`useState`, `useContext`) e hooks customizados para lógica modular (`useAuth`, `useRegistrationsReport`).
+- **Autenticação**: Autenticação baseada em JWT com estado gerenciado pelo `AuthContext`.
+- **Comunicação com API**: Instância `axios` para fazer chamadas à API RESTful no backend.
+- **Estilização**: CSS Modules e folhas de estilo globais para um design flexível e de fácil manutenção.
 
 ### Como Executar
 
-```bash
-npm install
-npm run dev
-```
-
-Abra a URL informada pelo Vite (geralmente `http://localhost:5173`). Alterações em `src/` recarregam automaticamente graças ao HMR.
+1.  Clone o repositório.
+2.  Instale as dependências:
+    ```bash
+    npm install
+    ```
+3.  Configure a API de backend (veja a seção Backend API).
+4.  Crie um arquivo `.env` na raiz do projeto e adicione a URL base da API:
+    ```
+    VITE_API_BASE_URL=https://localhost:7242
+    ```
+    *Ajuste a porta se o seu backend rodar em uma diferente.*
+5.  Execute o servidor de desenvolvimento:
+    ```bash
+    npm run dev
+    ```
+Abra a URL fornecida pelo Vite (geralmente `http://localhost:5173`).
 
 ### API Backend
 
-O formulário envia os dados para o projeto ASP.NET Core localizado em `../aspnetcore-api`.
+A aplicação requer o projeto ASP.NET Core complementar localizado em `../aspnetcore-api`.
 
-1. Ajuste as credenciais do MySQL em `aspnetcore-api/appsettings.Development.json` (`ConnectionStrings:DefaultConnection`).
-2. Restaure e execute a API com HTTPS habilitado (requisito do frontend):
-	```powershell
-	cd ..\aspnetcore-api
-	dotnet restore
-	dotnet run --launch-profile https
-	```
-	Se o executável estiver bloqueado por uma execução anterior, finalize o processo antigo (Ctrl+C no terminal anterior) antes de executar novamente.
-3. Confirme a disponibilidade do Swagger em `https://localhost:7242/swagger` e mantenha o servidor ativo. Aceite o aviso de certificado na primeira visita, se aparecer.
-4. O app React lê o endpoint da API via `.env` (`VITE_API_BASE_URL`). Ajuste o valor caso a API rode em outra porta ou host e reinicie o `npm run dev` sempre que alterar o arquivo.
+1.  **Configure**: Defina suas credenciais do MySQL em `aspnetcore-api/appsettings.Development.json`.
+2.  **Execute**: Restaure e execute a API com HTTPS ativado:
+    ```powershell
+    cd ..\aspnetcore-api
+    dotnet restore
+    dotnet run --launch-profile https
+    ```
+3.  **Verifique**: Garanta que a UI do Swagger esteja disponível em `https://localhost:7242/swagger` e mantenha o servidor em execução.
 
 ### Scripts Disponíveis
 
-- `npm run dev` – inicia o servidor de desenvolvimento com hot reload.
-- `npm run build` – gera o bundle de produção na pasta `dist/`.
-- `npm run preview` – serve localmente o bundle de produção para testes rápidos.
+-   `npm run dev`: Inicia o servidor de desenvolvimento com Hot Module Replacement.
+-   `npm run build`: Empacota a aplicação para produção no diretório `dist/`.
+-   `npm run preview`: Serve o pacote de produção localmente para teste.
 
-### Estrutura do Projeto (trecho)
+### Estrutura do Projeto
 
 ```
 src/
-	App.jsx                 # Shell com navegação e rotas
-	App.css                 # Estilos compartilhados entre as variantes
-	main.jsx                # Bootstrap (React + BrowserRouter)
-	hooks/
-		useRegistrationForm.js # Estado compartilhado + lógica de envio
-	pages/
-		ModernForm.jsx        # Layout glassmorphism
-		SimpleForm.jsx        # Layout compacto em cartão branco
-		Reports.jsx           # Relatório de cadastros
-	index.css               # Tema global, fontes e resets
+├── assets/                  # Assets estáticos
+├── components/              # Componentes compartilhados (ex: ProtectedRoute)
+│   └── ProtectedRoute.jsx
+├── context/                 # Provedores de contexto React (ex: AuthContext)
+│   └── AuthContext.jsx
+├── hooks/                   # Hooks customizados para estado e lógica
+│   ├── useAuth.js
+│   └── useRegistrationsReport.js
+├── pages/                   # Componentes de página de nível superior
+│   ├── DashboardPage.jsx
+│   ├── EditRegistrationModal.jsx
+│   ├── LoginPage.jsx
+│   ├── RegisterPage.jsx
+│   └── Reports.jsx
+├── services/                # Camada de comunicação com a API
+│   └── api.js
+├── App.css                  # Estilos principais da aplicação
+├── App.jsx                  # Componente raiz com roteamento
+├── index.css                # Estilos globais e resets
+└── main.jsx                 # Ponto de entrada da aplicação
 ```
-
-### Notas de Personalização
-
-- Ajuste tokens de layout (cores, bordas, grid) em `App.css` para refletir a identidade visual desejada.
-- Personalize o payload ou o tratamento da resposta em `hooks/useRegistrationForm.js` caso o contrato da API mude.
-- A máscara de CPF roda no cliente; mova-a para uma utilidade compartilhada caso novos campos precisem de formatação similar.
-- Lembre-se de atualizar o `.env` sempre que o endpoint da API for alterado.
-
-### Requisitos
-
-- Node.js LTS (recomendado 18 ou superior)
-- npm 9+ (ou pnpm/yarn com scripts equivalentes)

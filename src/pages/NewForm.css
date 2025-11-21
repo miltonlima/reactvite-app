@@ -24,7 +24,7 @@
 
 .new-form-header p {
   margin: 0 0 12px 0;
-  color: rgba(15,23,42,0.7);
+  color: rgba(226,232,255,0.72);
 }
 
 .fields-grid {
@@ -41,6 +41,7 @@
 .field label {
   font-weight: 600;
   margin-bottom: 6px;
+  color: rgba(226,232,255,0.82);
 }
 
 .field input,
@@ -71,11 +72,11 @@
 .new-actions button.secondary {
   background: transparent;
   color: #9fbffb;
-  border: 1px solid rgba(159,191,251,0.06);
+  border: 1px solid rgba(159,191,251,0.18);
 }
 
 .form-error {
-  color: #b91c1c;
+  color: #fca5a5;
   margin-top: 10px;
 }
 
@@ -84,7 +85,7 @@
   padding: 12px;
   background: rgba(255,255,255,0.02);
   border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.03);
+  border: 1px solid rgba(148,163,255,0.18);
   color: #dbeafe;
 }
 

@@ -9,6 +9,7 @@ import NewForm from './pages/NewForm';
 import ProfilePage from './pages/ProfilePage';
 import EducationUnitsPage from './pages/EducationUnitsPage';
 import EducationClassesPage from './pages/EducationClassesPage';
+import EducationStudentsPage from './pages/EducationStudentsPage';
 import './App.css';
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <Route path="new-registration" element={<NewForm />} />
         <Route path="education-units" element={<EducationUnitsPage />} />
         <Route path="education-classes" element={<EducationClassesPage />} />
+        <Route path="education-students" element={<EducationStudentsPage />} />
         <Route path="profile" element={<ProfilePage />} />
       </Route>
 

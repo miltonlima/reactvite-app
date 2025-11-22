@@ -18,6 +18,7 @@ const Layout = () => {
           <Link to="new-registration">Novo Cadastro</Link>
           <Link to="education-units">Unidades</Link>
           <Link to="education-classes">Turmas</Link>
+          <Link to="education-students">Alunos</Link>
           <Link to="profile">Meu Perfil</Link>
         </nav>
         <div className="layout-actions">

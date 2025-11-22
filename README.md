@@ -24,6 +24,7 @@ This project is a single-page React application bootstrapped with Vite, featurin
     - Glassmorphism-inspired and simple card-based form layouts.
     - Client-side validation and real-time CPF formatting.
     - Responsive design for various screen sizes.
+- **Education Network Management**: Dedicated screen to register and list school units, aligning future class and student assignments per unit.
 
 ### Tech Stack
 
@@ -44,7 +45,7 @@ This project is a single-page React application bootstrapped with Vite, featurin
 3.  Set up the backend API (see Backend API section).
 4.  Create a `.env` file in the root of the project and add the API base URL:
     ```
-    VITE_API_BASE_URL=https://localhost:7242
+    VITE_API_BASE_URL=http://localhost:5128
     ```
     *Adjust the port if your backend runs on a different one.*
 5.  Run the development server:
@@ -83,9 +84,11 @@ src/
 │   └── AuthContext.jsx
 ├── hooks/                   # Custom hooks for state and logic
 │   ├── useAuth.js
+│   ├── useEducationUnits.js
 │   └── useRegistrationsReport.js
 ├── pages/                   # Top-level page components
 │   ├── DashboardPage.jsx
+│   ├── EducationUnitsPage.jsx
 │   ├── EditRegistrationModal.jsx
 │   ├── LoginPage.jsx
 │   ├── RegisterPage.jsx
@@ -120,6 +123,7 @@ Este projeto é uma aplicação React de página única (SPA) criada com Vite, a
     - Layouts de formulário inspirados em Glassmorphism e baseados em cartões simples.
     - Validação no lado do cliente e formatação de CPF em tempo real.
     - Design responsivo para vários tamanhos de tela.
+- **Gestão da Rede de Ensino**: Tela dedicada para cadastrar e listar unidades escolares, preparando o sistema para turmas e alunos vinculados.
 
 ### Stack Tecnológica
 
@@ -140,7 +144,7 @@ Este projeto é uma aplicação React de página única (SPA) criada com Vite, a
 3.  Configure a API de backend (veja a seção Backend API).
 4.  Crie um arquivo `.env` na raiz do projeto e adicione a URL base da API:
     ```
-    VITE_API_BASE_URL=https://localhost:7242
+    VITE_API_BASE_URL=http://localhost:5128
     ```
     *Ajuste a porta se o seu backend rodar em uma diferente.*
 5.  Execute o servidor de desenvolvimento:
@@ -179,9 +183,11 @@ src/
 │   └── AuthContext.jsx
 ├── hooks/                   # Hooks customizados para estado e lógica
 │   ├── useAuth.js
+│   ├── useEducationUnits.js
 │   └── useRegistrationsReport.js
 ├── pages/                   # Componentes de página de nível superior
 │   ├── DashboardPage.jsx
+│   ├── EducationUnitsPage.jsx
 │   ├── EditRegistrationModal.jsx
 │   ├── LoginPage.jsx
 │   ├── RegisterPage.jsx

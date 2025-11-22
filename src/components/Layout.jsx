@@ -16,6 +16,7 @@ const Layout = () => {
           <Link to="dashboard">Dashboard</Link>
           <Link to="reports">Relatórios</Link>
           <Link to="new-registration">Novo Cadastro</Link>
+          <Link to="education-units">Unidades</Link>
           <Link to="profile">Meu Perfil</Link>
         </nav>
         <div className="layout-actions">

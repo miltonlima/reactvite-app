@@ -7,6 +7,7 @@ import DashboardPage from './pages/DashboardPage';
 import Reports from './pages/Reports';
 import NewForm from './pages/NewForm';
 import ProfilePage from './pages/ProfilePage';
+import EducationUnitsPage from './pages/EducationUnitsPage';
 import './App.css';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="reports" element={<Reports />} />
         <Route path="new-registration" element={<NewForm />} />
+        <Route path="education-units" element={<EducationUnitsPage />} />
         <Route path="profile" element={<ProfilePage />} />
       </Route>
 

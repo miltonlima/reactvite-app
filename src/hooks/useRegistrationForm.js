@@ -9,6 +9,8 @@ const initialFormState = {
   description: '',
 }
 
+const DEFAULT_PASSWORD = '123456'
+
 const sanitizeCpf = (value) => value.replace(/\D/g, '').slice(0, 11)
 
 export const formatCpfForDisplay = (value) => {
@@ -19,7 +21,7 @@ export const formatCpfForDisplay = (value) => {
     .replace(/(\d{3})(\d{1,2})$/, '$1-$2')
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://localhost:7242'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5128'
 
 export function useRegistrationForm() {
   const [formData, setFormData] = useState({ ...initialFormState })
@@ -55,6 +57,7 @@ export function useRegistrationForm() {
       birthDate: formData.birthDate,
       cpf: sanitizeCpf(formData.cpf),
       email: formData.email.trim(),
+      password: DEFAULT_PASSWORD,
       description: formData.description.trim() || null,
     }
 

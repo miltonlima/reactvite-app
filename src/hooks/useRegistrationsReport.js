@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import useAuth from './useAuth'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://localhost:7242'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5128'
 
 export function useRegistrationsReport() {
   const [items, setItems] = useState([])

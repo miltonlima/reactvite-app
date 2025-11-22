@@ -24,7 +24,7 @@ This project is a single-page React application bootstrapped with Vite, featurin
     - Glassmorphism-inspired and simple card-based form layouts.
     - Client-side validation and real-time CPF formatting.
     - Responsive design for various screen sizes.
-- **Education Network Management**: Dedicated screen to register and list school units, aligning future class and student assignments per unit.
+- **Education Network Management**: Dedicated screens to register school units and classes, keeping future class/student assignments organized by unit.
 
 ### Tech Stack
 
@@ -85,10 +85,12 @@ src/
 ├── hooks/                   # Custom hooks for state and logic
 │   ├── useAuth.js
 │   ├── useEducationUnits.js
+│   ├── useEducationClasses.js
 │   └── useRegistrationsReport.js
 ├── pages/                   # Top-level page components
 │   ├── DashboardPage.jsx
 │   ├── EducationUnitsPage.jsx
+│   ├── EducationClassesPage.jsx
 │   ├── EditRegistrationModal.jsx
 │   ├── LoginPage.jsx
 │   ├── RegisterPage.jsx
@@ -123,7 +125,7 @@ Este projeto é uma aplicação React de página única (SPA) criada com Vite, a
     - Layouts de formulário inspirados em Glassmorphism e baseados em cartões simples.
     - Validação no lado do cliente e formatação de CPF em tempo real.
     - Design responsivo para vários tamanhos de tela.
-- **Gestão da Rede de Ensino**: Tela dedicada para cadastrar e listar unidades escolares, preparando o sistema para turmas e alunos vinculados.
+- **Gestão da Rede de Ensino**: Telas dedicadas para cadastrar unidades e turmas, organizando os vínculos de turmas e alunos por unidade.
 
 ### Stack Tecnológica
 
@@ -184,10 +186,12 @@ src/
 ├── hooks/                   # Hooks customizados para estado e lógica
 │   ├── useAuth.js
 │   ├── useEducationUnits.js
+│   ├── useEducationClasses.js
 │   └── useRegistrationsReport.js
 ├── pages/                   # Componentes de página de nível superior
 │   ├── DashboardPage.jsx
 │   ├── EducationUnitsPage.jsx
+│   ├── EducationClassesPage.jsx
 │   ├── EditRegistrationModal.jsx
 │   ├── LoginPage.jsx
 │   ├── RegisterPage.jsx

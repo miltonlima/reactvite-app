@@ -8,7 +8,7 @@ Multilingual README: English first, Português logo abaixo.
 
 ### Overview
 
-This project is a single-page React application bootstrapped with Vite, featuring a complete CRUD (Create, Read, Update, Delete) system for user registrations. It includes user authentication (login/register), protected routes, and a dashboard to manage records. The application connects to an ASP.NET Core backend API to persist data.
+This project is a single-page React application bootstrapped with Vite, featuring a complete CRUD (Create, Read, Update, Delete) system for user registrations. It includes user authentication (login/register), protected routes, and a dashboard to manage records. Beyond the core registration flows, the app now offers education-network management to register units, create classes, and enroll students. The application connects to an ASP.NET Core backend API to persist data.
 
 ### Features
 
@@ -24,13 +24,13 @@ This project is a single-page React application bootstrapped with Vite, featurin
     - Glassmorphism-inspired and simple card-based form layouts.
     - Client-side validation and real-time CPF formatting.
     - Responsive design for various screen sizes.
-- **Education Network Management**: Dedicated screens to register school units and classes, keeping future class/student assignments organized by unit.
+- **Education Network Management**: Dedicated screens to register school units, manage classes per unit, and enroll students in their respective classes.
 
 ### Tech Stack
 
-- Vite 5 with React 18 (`StrictMode`).
+- Vite 7 with React 19 (`StrictMode`).
 - **Routing**: `react-router-dom` for navigation and protected routes.
-- **State Management**: React Hooks (`useState`, `useContext`) and custom hooks for modular logic (`useAuth`, `useRegistrationsReport`).
+- **State Management**: React Hooks (`useState`, `useContext`) and custom hooks for modular logic (`useAuth`, `useRegistrationsReport`, `useEducationUnits`, `useEducationClasses`, `useEducationStudents`).
 - **Authentication**: JWT-based authentication with state managed by `AuthContext`.
 - **API Communication**: `axios` instance for making RESTful API calls to the backend.
 - **Styling**: CSS Modules and global stylesheets for a flexible and maintainable design.
@@ -67,6 +67,16 @@ The application requires the companion ASP.NET Core project located at `../aspne
     ```
 3.  **Verify**: Ensure the Swagger UI is available at `https://localhost:7242/swagger` and keep the server running.
 
+### Education Network Flow
+
+Once authenticated, the sidebar exposes three screens under the education network workflow:
+
+1. **Education Units** (`/app/education-units`): register each school or campus. Codes are optional, but names must be unique per your business rule.
+2. **Education Classes** (`/app/education-classes`): create classes linked to a unit. The form auto-populates the unit dropdown from the units API.
+3. **Education Students** (`/app/education-students`): enroll students and associate them with an existing class, capturing optional birthdate, guardian, and notes.
+
+Every form surfaces inline success/error messages. Deletions are optimistic—when the backend confirms removal, the UI list updates immediately. All three sections rely on the authenticated JWT; expired tokens cause the form to surface an actionable error prompting a re-login.
+
 ### Available Scripts
 
 -   `npm run dev`: Starts the development server with Hot Module Replacement.
@@ -86,11 +96,13 @@ src/
 │   ├── useAuth.js
 │   ├── useEducationUnits.js
 │   ├── useEducationClasses.js
+│   ├── useEducationStudents.js
 │   └── useRegistrationsReport.js
 ├── pages/                   # Top-level page components
 │   ├── DashboardPage.jsx
 │   ├── EducationUnitsPage.jsx
 │   ├── EducationClassesPage.jsx
+│   ├── EducationStudentsPage.jsx
 │   ├── EditRegistrationModal.jsx
 │   ├── LoginPage.jsx
 │   ├── RegisterPage.jsx
@@ -109,11 +121,11 @@ src/
 
 ### Visão Geral
 
-Este projeto é uma aplicação React de página única (SPA) criada com Vite, apresentando um sistema CRUD (Create, Read, Update, Delete) completo para cadastros de usuários. Inclui autenticação de usuário (login/registro), rotas protegidas e um painel para gerenciar os registros. A aplicação se conecta a uma API backend ASP.NET Core para persistir os dados.
+Este projeto é uma aplicação React de página única (SPA) criada com Vite, apresentando um sistema CRUD (Create, Read, Update, Delete) completo para cadastros de usuários. Inclui autenticação de usuário (login/registro), rotas protegidas e um painel para gerenciar os registros. Além dos fluxos principais de cadastro, o app agora entrega gerenciamento educacional para cadastrar unidades, criar turmas e matricular alunos. A aplicação se conecta a uma API backend ASP.NET Core para persistir os dados.
 
 ### Funcionalidades
 
-- **Autenticação de Usuário**: Páginas seguras de login and registro.
+- **Autenticação de Usuário**: Páginas seguras de login e registro.
 - **Rotas Protegidas**: O painel e as páginas de relatório são acessíveis apenas para usuários autenticados.
 - **Dashboard**: Um hub central para usuários autenticados.
 - **Operações CRUD**:
@@ -125,13 +137,13 @@ Este projeto é uma aplicação React de página única (SPA) criada com Vite, a
     - Layouts de formulário inspirados em Glassmorphism e baseados em cartões simples.
     - Validação no lado do cliente e formatação de CPF em tempo real.
     - Design responsivo para vários tamanhos de tela.
-- **Gestão da Rede de Ensino**: Telas dedicadas para cadastrar unidades e turmas, organizando os vínculos de turmas e alunos por unidade.
+- **Gestão da Rede de Ensino**: Telas dedicadas para cadastrar unidades, administrar turmas por unidade e matricular alunos nas respectivas turmas.
 
 ### Stack Tecnológica
 
-- Vite 5 com React 18 (`StrictMode`).
+- Vite 7 com React 19 (`StrictMode`).
 - **Roteamento**: `react-router-dom` para navegação e rotas protegidas.
-- **Gerenciamento de Estado**: React Hooks (`useState`, `useContext`) e hooks customizados para lógica modular (`useAuth`, `useRegistrationsReport`).
+- **Gerenciamento de Estado**: React Hooks (`useState`, `useContext`) e hooks customizados para lógica modular (`useAuth`, `useRegistrationsReport`, `useEducationUnits`, `useEducationClasses`, `useEducationStudents`).
 - **Autenticação**: Autenticação baseada em JWT com estado gerenciado pelo `AuthContext`.
 - **Comunicação com API**: Instância `axios` para fazer chamadas à API RESTful no backend.
 - **Estilização**: CSS Modules e folhas de estilo globais para um design flexível e de fácil manutenção.
@@ -168,6 +180,16 @@ A aplicação requer o projeto ASP.NET Core complementar localizado em `../aspne
     ```
 3.  **Verifique**: Garanta que a UI do Swagger esteja disponível em `https://localhost:7242/swagger` e mantenha o servidor em execução.
 
+### Fluxo da Rede de Ensino
+
+Após autenticar-se, o menu lateral libera três telas que compõem o fluxo educacional:
+
+1. **Unidades de Ensino** (`/app/education-units`): cadastre cada escola ou campus. O código é opcional, mas o nome deve seguir as regras de negócio escolhidas.
+2. **Turmas** (`/app/education-classes`): crie turmas vinculadas a uma unidade. O formulário carrega automaticamente as unidades disponíveis via API.
+3. **Alunos** (`/app/education-students`): matricule alunos associando-os a uma turma existente, com suporte para data de nascimento, responsável e observações.
+
+Cada formulário exibe mensagens de sucesso/erro no próprio card. Exclusões são otimistas — após confirmação do backend a lista reflete a remoção imediatamente. As três áreas dependem do JWT autenticado; se o token expirar, o formulário mostra um aviso para refazer o login.
+
 ### Scripts Disponíveis
 
 -   `npm run dev`: Inicia o servidor de desenvolvimento com Hot Module Replacement.
@@ -187,11 +209,13 @@ src/
 │   ├── useAuth.js
 │   ├── useEducationUnits.js
 │   ├── useEducationClasses.js
+│   ├── useEducationStudents.js
 │   └── useRegistrationsReport.js
 ├── pages/                   # Componentes de página de nível superior
 │   ├── DashboardPage.jsx
 │   ├── EducationUnitsPage.jsx
 │   ├── EducationClassesPage.jsx
+│   ├── EducationStudentsPage.jsx
 │   ├── EditRegistrationModal.jsx
 │   ├── LoginPage.jsx
 │   ├── RegisterPage.jsx

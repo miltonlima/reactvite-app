@@ -24,6 +24,11 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
+#root {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
 body.light-mode {
   color: var(--text-light);
   background: var(--background-light);

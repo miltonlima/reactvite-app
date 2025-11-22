@@ -18,13 +18,18 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, [token]);
 
-  const login = async (username, password) => {
+  const login = async (email, password) => {
     try {
-      const { data } = await api.post('/login', { username, password });
-      setToken(data.token);
-      localStorage.setItem('token', data.token);
-      api.defaults.headers.Authorization = `Bearer ${data.token}`;
-      setUser({ authenticated: true });
+      const { data } = await api.post('/login', { email, password });
+      const authToken = data?.token;
+      if (!authToken) {
+        throw new Error('Token não recebido da API.');
+      }
+
+      setToken(authToken);
+      localStorage.setItem('token', authToken);
+      api.defaults.headers.Authorization = `Bearer ${authToken}`;
+      setUser(data?.user ?? { authenticated: true });
     } catch (error) {
       console.error('Login failed', error);
       throw error;

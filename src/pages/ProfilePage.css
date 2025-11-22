@@ -1,0 +1,156 @@
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  color: #e2e8f0;
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 1.5rem 1.75rem;
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 255, 0.22);
+  background: rgba(15, 23, 42, 0.65);
+  box-shadow: 0 36px 60px -40px rgba(15, 76, 129, 0.65);
+}
+
+.profile-kicker {
+  display: inline-flex;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgba(99, 102, 241, 0.18);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #c7d2fe;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.profile-header h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 2.4vw, 2.4rem);
+}
+
+.profile-header p {
+  margin: 0.4rem 0 0 0;
+  color: rgba(203, 213, 225, 0.82);
+  max-width: 640px;
+}
+
+.profile-grid {
+  display: grid;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (min-width: 960px) {
+  .profile-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.75rem;
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 255, 0.18);
+  background: rgba(8, 18, 36, 0.78);
+  box-shadow: 0 34px 70px -42px rgba(30, 64, 175, 0.6);
+}
+
+.profile-card h2 {
+  margin: 0;
+  font-size: clamp(1.4rem, 1.8vw, 1.8rem);
+}
+
+.profile-description {
+  margin: 0;
+  color: rgba(203, 213, 225, 0.8);
+  font-size: 0.95rem;
+}
+
+.profile-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 255, 0.25);
+  background: rgba(148, 163, 255, 0.12);
+  color: #e2e8f0;
+}
+
+.profile-alert-success {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.16);
+  color: #bbf7d0;
+}
+
+.profile-alert-error {
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.16);
+  color: #fecaca;
+}
+
+.profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.profile-field span {
+  font-weight: 600;
+  color: rgba(226, 232, 255, 0.86);
+}
+
+.profile-field-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 720px) {
+  .profile-field-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.profile-field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.profile-actions button {
+  min-width: 180px;
+}
+
+.profile-actions button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.profile-logout {
+  background: linear-gradient(135deg, #fb7185, #f97316);
+  color: #0f172a;
+  border-radius: 999px;
+  padding: 0.65rem 1.5rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.profile-logout:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px -22px rgba(248, 113, 113, 0.6);
+}

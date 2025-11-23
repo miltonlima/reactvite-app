@@ -1,0 +1,304 @@
+.enrollments-page {
+  display: grid;
+  gap: 2rem;
+  color: inherit;
+}
+
+.enrollments-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.75rem 2rem;
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 255, 0.28);
+  background: rgba(15, 23, 42, 0.55);
+  box-shadow: 0 28px 60px -50px rgba(59, 130, 246, 0.6);
+}
+
+.enrollments-kicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: rgba(96, 165, 250, 0.9);
+}
+
+.enrollments-header h1 {
+  margin: 0.35rem 0 0 0;
+  font-size: clamp(2rem, 3vw, 2.8rem);
+}
+
+.enrollments-header p {
+  margin: 0.5rem 0 0 0;
+  max-width: 700px;
+  color: rgba(226, 232, 255, 0.75);
+}
+
+.enrollments-refresh {
+  align-self: flex-start;
+  padding: 0.75rem 1.5rem;
+  border-radius: 14px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #22d3ee, #6366f1);
+  color: #0f172a;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.enrollments-refresh:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.enrollments-refresh:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -16px rgba(34, 211, 238, 0.6);
+}
+
+.enrollments-card {
+  display: grid;
+  gap: 1.75rem;
+  padding: 2rem;
+  border-radius: 22px;
+  border: 1px solid rgba(148, 163, 255, 0.22);
+  background: rgba(15, 23, 42, 0.58);
+  box-shadow: 0 32px 70px -48px rgba(59, 130, 246, 0.6);
+}
+
+.enrollments-card-header h2 {
+  margin: 0;
+  font-size: clamp(1.6rem, 2.4vw, 2rem);
+}
+
+.enrollments-card-header p {
+  margin: 0.5rem 0 0 0;
+  color: rgba(226, 232, 255, 0.7);
+}
+
+.enrollments-alert {
+  padding: 0.85rem 1.1rem;
+  border-radius: 16px;
+  font-weight: 600;
+  background: rgba(99, 102, 241, 0.18);
+  border: 1px solid rgba(99, 102, 241, 0.28);
+  color: rgba(226, 232, 255, 0.85);
+}
+
+.enrollments-alert-error {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fecaca;
+}
+
+.enrollments-placeholder {
+  margin: 0;
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  border: 1px dashed rgba(148, 163, 255, 0.35);
+  background: rgba(15, 23, 42, 0.35);
+  text-align: center;
+  color: rgba(226, 232, 255, 0.7);
+}
+
+.enrollments-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.enrollments-item {
+  display: grid;
+  gap: 1rem;
+  padding: 1.6rem 1.8rem;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(148, 163, 255, 0.25);
+}
+
+.enrollments-item-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.enrollments-item-header strong {
+  display: block;
+  font-size: 1.15rem;
+}
+
+.enrollments-subtitle {
+  font-size: 0.85rem;
+  color: rgba(148, 163, 255, 0.75);
+}
+
+.enrollments-chip {
+  display: inline-flex;
+  margin-top: 0.35rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: rgba(96, 165, 250, 0.2);
+  color: rgba(191, 219, 254, 0.9);
+}
+
+.enrollments-item-body {
+  border-radius: 16px;
+  border: 1px solid rgba(148, 163, 255, 0.22);
+  background: rgba(15, 23, 42, 0.45);
+  padding: 1.1rem 1.3rem;
+}
+
+.enrollments-current-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.enrollments-current-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.enrollments-current-list strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.enrollments-current-list span {
+  display: block;
+  font-size: 0.85rem;
+  color: rgba(226, 232, 255, 0.75);
+}
+
+.enrollments-date {
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.enrollments-current-list button {
+  padding: 0.55rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  background: rgba(248, 113, 113, 0.22);
+  color: #fecaca;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.enrollments-current-list button:hover:not([disabled]) {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px -18px rgba(248, 113, 113, 0.6);
+}
+
+.enrollments-current-list button[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.enrollments-empty {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  border: 1px dashed rgba(148, 163, 255, 0.35);
+  background: rgba(15, 23, 42, 0.35);
+  font-size: 0.9rem;
+  color: rgba(226, 232, 255, 0.75);
+}
+
+.enrollments-actions {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.enrollments-actions label {
+  font-weight: 600;
+  color: rgba(226, 232, 255, 0.85);
+}
+
+.enrollments-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.enrollments-row select {
+  flex: 1;
+  min-width: 220px;
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(148, 163, 255, 0.25);
+  background: rgba(15, 23, 42, 0.45);
+  color: inherit;
+}
+
+.enrollments-row button {
+  padding: 0.75rem 1.35rem;
+  border-radius: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #22d3ee, #6366f1);
+  color: #0f172a;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.enrollments-row button:hover:not([disabled]) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px -16px rgba(99, 102, 241, 0.65);
+}
+
+.enrollments-row button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.enrollments-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(226, 232, 255, 0.68);
+}
+
+.enrollments-feedback {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: rgba(148, 163, 255, 0.2);
+  border: 1px solid rgba(148, 163, 255, 0.28);
+  color: rgba(226, 232, 255, 0.85);
+}
+
+.enrollments-feedback-success {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.35);
+  color: #bbf7d0;
+}
+
+.enrollments-feedback-error {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.38);
+  color: #fecaca;
+}
+
+@media (max-width: 720px) {
+  .enrollments-card,
+  .enrollments-header {
+    padding: 1.5rem;
+  }
+}

@@ -4,7 +4,6 @@ import useAuth from './useAuth'
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5128'
 
 const initialFormState = {
-  educationClassId: '',
   name: '',
   birthDate: '',
   guardianName: '',
@@ -107,7 +106,6 @@ export function useEducationStudents() {
     setFormMessage('')
 
     const payload = {
-      educationClassId: Number(formState.educationClassId),
       name: formState.name.trim(),
       birthDate: formState.birthDate || null,
       guardianName: formState.guardianName.trim() || null,
@@ -137,13 +135,85 @@ export function useEducationStudents() {
       const created = await response.json()
       setStudents((prev) => [created, ...prev])
       setFormStatus('success')
-      setFormMessage('Aluno inscrito com sucesso.')
+      setFormMessage('Aluno cadastrado com sucesso. Acesse a tela Inscrições para vincular turmas.')
       setFormState(initialFormState)
     } catch (error) {
       setFormStatus('error')
       setFormMessage(error instanceof Error ? error.message : 'Erro inesperado ao cadastrar o aluno.')
     }
   }, [authorizedHeaders, formState])
+
+  const enrollStudent = useCallback(
+    async (studentId, classId) => {
+      if (!authorizedHeaders) {
+        throw new Error('Sua sessão expirou. Faça login novamente.')
+      }
+
+      const payload = {
+        educationClassId: Number(classId),
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/education-students/${studentId}/enrollments`, {
+        method: 'POST',
+        headers: authorizedHeaders,
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) {
+        let message = 'Não foi possível vincular o aluno à turma.'
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const body = await response.json()
+          if (body?.message) {
+            message = body.message
+          }
+        }
+        throw new Error(message)
+      }
+
+      const updated = await response.json()
+      setStudents((prev) => prev.map((student) => (student.id === updated.id ? updated : student)))
+      return updated
+    },
+    [authorizedHeaders]
+  )
+
+  const unenrollStudent = useCallback(
+    async (studentId, classId) => {
+      if (!authorizedHeaders) {
+        throw new Error('Sua sessão expirou. Faça login novamente.')
+      }
+
+      const response = await fetch(
+        `${API_BASE_URL}/api/education-students/${studentId}/enrollments/${classId}`,
+        {
+          method: 'DELETE',
+          headers: authorizedHeaders,
+        }
+      )
+
+      if (!response.ok) {
+        let message = 'Não foi possível remover a turma do aluno.'
+        if (response.status === 404) {
+          message = 'Aluno ou turma não encontrados.'
+        } else {
+          const contentType = response.headers.get('content-type')
+          if (contentType && contentType.includes('application/json')) {
+            const body = await response.json()
+            if (body?.message) {
+              message = body.message
+            }
+          }
+        }
+        throw new Error(message)
+      }
+
+      const updated = await response.json()
+      setStudents((prev) => prev.map((student) => (student.id === updated.id ? updated : student)))
+      return updated
+    },
+    [authorizedHeaders]
+  )
 
   const deleteStudent = useCallback(async (id) => {
     if (!authorizedHeaders) {
@@ -184,6 +254,8 @@ export function useEducationStudents() {
     formMessage,
     handleFormChange,
     createStudent,
+    enrollStudent,
+    unenrollStudent,
     resetForm,
     deleteStudent,
     refresh,

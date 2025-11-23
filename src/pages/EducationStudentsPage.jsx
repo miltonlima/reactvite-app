@@ -1,9 +1,9 @@
 import './EducationStudentsPage.css'
+import { Link } from 'react-router-dom'
 import { useEducationStudents } from '../hooks/useEducationStudents'
 
 function EducationStudentsPage() {
   const {
-    classes,
     students,
     status,
     errorMessage,
@@ -22,13 +22,20 @@ function EducationStudentsPage() {
     await createStudent()
   }
 
+  const handleDeleteStudent = async (studentId) => {
+    await deleteStudent(studentId)
+  }
+
   return (
     <section className="students-page" aria-labelledby="students-title">
       <header className="students-header">
         <div>
           <p className="students-kicker">Rede de ensino</p>
           <h1 id="students-title">Alunos</h1>
-          <p>Inscreva alunos nas turmas existentes, mantendo um histórico dos responsáveis, dados de contato e observações importantes.</p>
+          <p>
+            Cadastre alunos de forma independente. As inscrições em turmas agora ficam na tela
+            <strong> Inscrições</strong>.
+          </p>
         </div>
         <button type="button" className="students-refresh" onClick={refresh} disabled={status === 'loading'}>
           {status === 'loading' ? 'Atualizando…' : 'Atualizar dados'}
@@ -38,8 +45,8 @@ function EducationStudentsPage() {
       <div className="students-layout">
         <form className="students-form" onSubmit={handleSubmit}>
           <div className="students-form-header">
-            <h2>Nova inscrição</h2>
-            <p>Preencha as informações básicas do aluno e vincule a turma desejada.</p>
+            <h2>Novo aluno</h2>
+            <p>Preencha as informações básicas; depois acesse Inscrições para vincular turmas.</p>
           </div>
 
           {formMessage && (
@@ -55,22 +62,6 @@ function EducationStudentsPage() {
             <p className="students-hint">
               A matrícula é gerada automaticamente ao cadastrar o aluno.
             </p>
-            <label className="students-field students-field-full">
-              <span>Turma *</span>
-              <select
-                name="educationClassId"
-                value={formState.educationClassId}
-                onChange={handleFormChange}
-                required
-              >
-                <option value="">Selecione uma turma</option>
-                {classes.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name} — {item.educationUnitName}
-                  </option>
-                ))}
-              </select>
-            </label>
 
             <label className="students-field students-field-full">
               <span>Nome do aluno *</span>
@@ -139,8 +130,8 @@ function EducationStudentsPage() {
 
         <div className="students-list-card">
           <div className="students-list-header">
-            <h2>Alunos inscritos</h2>
-            <p>Confira a distribuição de alunos por turma e mantenha os cadastros atualizados.</p>
+            <h2>Alunos cadastrados</h2>
+            <p>Acompanhe os dados principais. Para gerenciar vínculos, utilize a tela Inscrições.</p>
           </div>
 
           {status === 'error' && (
@@ -160,12 +151,18 @@ function EducationStudentsPage() {
                   <div className="students-item-header">
                     <div>
                       <strong>{item.name}</strong>
-                      <span className="students-chip">Turma: {item.educationClassName}</span>
-                      <span className="students-chip">Unidade: {item.educationUnitName}</span>
+                      {item.registrationCode && (
+                        <span className="students-chip">Matrícula: {item.registrationCode}</span>
+                      )}
                     </div>
-                    <button type="button" onClick={() => deleteStudent(item.id)}>
-                      Remover
-                    </button>
+                    <div className="students-item-actions">
+                      <Link to="/app/education-enrollments" className="students-manage-link">
+                        Gerenciar inscrições
+                      </Link>
+                      <button type="button" onClick={() => handleDeleteStudent(item.id)}>
+                        Remover aluno
+                      </button>
+                    </div>
                   </div>
                   <dl>
                     {item.registrationCode && (
@@ -199,10 +196,25 @@ function EducationStudentsPage() {
                       </div>
                     )}
                     <div>
-                      <dt>Inscrito em</dt>
+                      <dt>Cadastrado em</dt>
                       <dd>{new Date(item.createdAt).toLocaleString('pt-BR')}</dd>
                     </div>
                   </dl>
+
+                  <div className="students-enrollment-summary">
+                    <strong>Turmas vinculadas</strong>
+                    {Array.isArray(item.enrollments) && item.enrollments.length > 0 ? (
+                      <ul className="students-enrollment-tags">
+                        {item.enrollments.map((enrollment) => (
+                          <li key={`${item.id}-${enrollment.educationClassId}`}>{enrollment.educationClassName}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="students-enrollment-empty">
+                        Nenhuma inscrição registrada. Use a tela Inscrições para adicionar vínculos.
+                      </p>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>

@@ -6,7 +6,6 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5128
 const initialFormState = {
   educationClassId: '',
   name: '',
-  registrationCode: '',
   birthDate: '',
   guardianName: '',
   guardianContact: '',
@@ -110,7 +109,6 @@ export function useEducationStudents() {
     const payload = {
       educationClassId: Number(formState.educationClassId),
       name: formState.name.trim(),
-      registrationCode: formState.registrationCode.trim() || null,
       birthDate: formState.birthDate || null,
       guardianName: formState.guardianName.trim() || null,
       guardianContact: formState.guardianContact.trim() || null,

@@ -52,6 +52,9 @@ function EducationStudentsPage() {
           )}
 
           <div className="students-grid">
+            <p className="students-hint">
+              A matrícula é gerada automaticamente ao cadastrar o aluno.
+            </p>
             <label className="students-field students-field-full">
               <span>Turma *</span>
               <select
@@ -80,18 +83,6 @@ function EducationStudentsPage() {
                 required
               />
             </label>
-
-            <label className="students-field">
-              <span>Código de matrícula</span>
-              <input
-                type="text"
-                name="registrationCode"
-                value={formState.registrationCode}
-                onChange={handleFormChange}
-                placeholder="Identificador interno"
-              />
-            </label>
-
             <label className="students-field">
               <span>Data de nascimento</span>
               <input

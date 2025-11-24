@@ -1,6 +1,7 @@
 import './EducationStudentsPage.css'
 import { Link } from 'react-router-dom'
 import { useEducationStudents } from '../hooks/useEducationStudents'
+import { formatCpfForDisplay } from '../hooks/useRegistrationForm'
 
 function EducationStudentsPage() {
   const {
@@ -72,6 +73,18 @@ function EducationStudentsPage() {
                 onChange={handleFormChange}
                 placeholder="Nome completo"
                 required
+              />
+            </label>
+            <label className="students-field">
+              <span>CPF</span>
+              <input
+                type="text"
+                name="cpf"
+                value={formState.cpf}
+                onChange={handleFormChange}
+                placeholder="000.000.000-00"
+                inputMode="numeric"
+                maxLength={14}
               />
             </label>
             <label className="students-field">
@@ -169,6 +182,12 @@ function EducationStudentsPage() {
                       <div>
                         <dt>Matrícula</dt>
                         <dd>{item.registrationCode}</dd>
+                      </div>
+                    )}
+                    {item.cpf && (
+                      <div>
+                        <dt>CPF</dt>
+                        <dd>{formatCpfForDisplay(item.cpf)}</dd>
                       </div>
                     )}
                     {item.birthDate && (

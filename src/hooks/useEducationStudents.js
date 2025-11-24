@@ -1,15 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import useAuth from './useAuth'
+import { formatCpfForDisplay } from './useRegistrationForm'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5128'
 
 const initialFormState = {
   name: '',
+  cpf: '',
   birthDate: '',
   guardianName: '',
   guardianContact: '',
   notes: '',
 }
+
+const sanitizeCpf = (value) => value.replace(/\D/g, '').slice(0, 11)
 
 export function useEducationStudents() {
   const { token } = useAuth()
@@ -83,6 +87,15 @@ export function useEducationStudents() {
   const handleFormChange = useCallback((event) => {
     const { name, value } = event.target
 
+    if (name === 'cpf') {
+      const formatted = formatCpfForDisplay(value)
+      setFormState((prev) => ({
+        ...prev,
+        cpf: formatted,
+      }))
+      return
+    }
+
     setFormState((prev) => ({
       ...prev,
       [name]: value,
@@ -107,6 +120,7 @@ export function useEducationStudents() {
 
     const payload = {
       name: formState.name.trim(),
+      cpf: sanitizeCpf(formState.cpf) || null,
       birthDate: formState.birthDate || null,
       guardianName: formState.guardianName.trim() || null,
       guardianContact: formState.guardianContact.trim() || null,

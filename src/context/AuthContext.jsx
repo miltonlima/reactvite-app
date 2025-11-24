@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const { data } = await api.post('/login', { email, password });
-      const authToken = data?.token;
+      const authToken = data?.token ?? data?.Token;
       if (!authToken) {
         throw new Error('Token não recebido da API.');
       }

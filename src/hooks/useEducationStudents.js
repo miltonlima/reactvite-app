@@ -6,6 +6,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5128
 
 const initialFormState = {
   name: '',
+  registrationCode: '',
   cpf: '',
   birthDate: '',
   guardianName: '',
@@ -87,6 +88,10 @@ export function useEducationStudents() {
 
   const handleFormChange = useCallback((event) => {
     const { name, value } = event.target
+
+    if (name === 'registrationCode') {
+      return
+    }
 
     if (name === 'cpf') {
       const formatted = formatCpfForDisplay(value)
@@ -251,6 +256,7 @@ export function useEducationStudents() {
     setEditingId(student?.id ?? null)
     setFormState({
       name: student?.name ?? '',
+      registrationCode: student?.registrationCode ?? '',
       cpf: formatCpfForDisplay(student?.cpf ?? ''),
       birthDate: student?.birthDate ?? '',
       guardianName: student?.guardianName ?? '',
@@ -293,6 +299,21 @@ export function useEducationStudents() {
     await Promise.all([fetchClasses(), fetchStudents()])
   }, [fetchClasses, fetchStudents])
 
+  const nextRegistrationCode = useMemo(() => {
+    const yearPrefix = String(new Date().getFullYear())
+    const numericCodes = students
+      .map((student) => student?.registrationCode)
+      .filter((code) => typeof code === 'string' && /^\d+$/.test(code) && code.startsWith(yearPrefix))
+
+    if (numericCodes.length === 0) {
+      return `${yearPrefix}${String(1).padStart(6, '0')}`
+    }
+
+    const maxCode = numericCodes.reduce((acc, code) => (code > acc ? code : acc), numericCodes[0])
+    const nextValue = (BigInt(maxCode) + BigInt(1)).toString()
+    return nextValue.padStart(maxCode.length, '0')
+  }, [students])
+
   useEffect(() => {
     refresh()
   }, [refresh])
@@ -316,5 +337,6 @@ export function useEducationStudents() {
     resetForm,
     deleteStudent,
     refresh,
+    nextRegistrationCode,
   }
 }

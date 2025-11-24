@@ -12,7 +12,7 @@ const initialFormState = {
 }
 
 export function useEducationUnits() {
-  const { token } = useAuth()
+  const { token, logout } = useAuth()
   const [items, setItems] = useState([])
   const [status, setStatus] = useState('idle')
   const [errorMessage, setErrorMessage] = useState('')
@@ -45,6 +45,13 @@ export function useEducationUnits() {
         headers: authorizedHeaders ?? undefined,
       })
 
+      if (response.status === 401) {
+        logout?.()
+        setStatus('idle')
+        setErrorMessage('Sua sessão expirou. Faça login novamente.')
+        return
+      }
+
       if (!response.ok) {
         throw new Error('Não foi possível carregar as unidades.')
       }
@@ -56,7 +63,7 @@ export function useEducationUnits() {
       setStatus('error')
       setErrorMessage(error instanceof Error ? error.message : 'Erro inesperado ao carregar as unidades.')
     }
-  }, [authorizedHeaders, token])
+  }, [authorizedHeaders, logout, token])
 
   const handleFormChange = useCallback((event) => {
     const { name, value } = event.target

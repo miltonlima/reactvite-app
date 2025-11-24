@@ -20,6 +20,7 @@ function EducationStudentsPage() {
     resetForm,
     deleteStudent,
     refresh,
+    nextRegistrationCode,
   } = useEducationStudents()
 
   const handleSubmit = async (event) => {
@@ -34,6 +35,10 @@ function EducationStudentsPage() {
   const handleEditStudent = (student) => {
     startEditing(student)
   }
+
+  const registrationCodeValue = isEditing
+    ? (formState.registrationCode ?? '')
+    : (nextRegistrationCode ?? '')
 
   return (
     <section className="students-page" aria-labelledby="students-title">
@@ -75,8 +80,20 @@ function EducationStudentsPage() {
             <p className="students-hint">
               {isEditing
                 ? 'A matrícula e as inscrições existentes do aluno serão preservadas.'
-                : 'A matrícula é gerada automaticamente ao cadastrar o aluno.'}
+                : 'A matrícula é gerada automaticamente como um número sequencial ao cadastrar o aluno.'}
             </p>
+
+            <label className="students-field">
+              <span>Matrícula</span>
+              <input
+                type="text"
+                name="registrationCode"
+                value={registrationCodeValue}
+                readOnly
+                placeholder="Gerada automaticamente"
+                inputMode="numeric"
+              />
+            </label>
 
             <label className="students-field students-field-full">
               <span>Nome do aluno *</span>

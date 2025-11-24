@@ -17,6 +17,7 @@ function EducationClassesPage() {
     cancelEdit,
     editingId,
     isEditing,
+    nextCode,
     deleteClass,
     refresh,
   } = useEducationClasses()
@@ -29,6 +30,8 @@ function EducationClassesPage() {
   const handleEditClass = (item) => {
     startEditing(item)
   }
+
+  const codeFieldValue = isEditing ? (formState.code ?? '') : (nextCode ? String(nextCode) : '')
 
   return (
     <section className="classes-page" aria-labelledby="classes-title">
@@ -64,6 +67,10 @@ function EducationClassesPage() {
           )}
 
           <div className="classes-grid">
+            <p className="classes-hint">
+              O código da turma é gerado automaticamente em ordem sequencial.
+            </p>
+
             <label className="classes-field classes-field-full">
               <span>Unidade *</span>
               <select
@@ -98,9 +105,9 @@ function EducationClassesPage() {
               <input
                 type="text"
                 name="code"
-                value={formState.code}
-                onChange={handleFormChange}
-                placeholder="Identificador interno"
+                value={codeFieldValue}
+                readOnly
+                placeholder="Gerado automaticamente"
               />
             </label>
 

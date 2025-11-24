@@ -110,7 +110,6 @@ export function useEducationClasses() {
     const payload = {
       educationUnitId: Number(formState.educationUnitId),
       name: formState.name.trim(),
-      code: formState.code.trim() || null,
       academicYear: formState.academicYear.trim() || null,
       description: formState.description.trim() || null,
     }
@@ -146,7 +145,10 @@ export function useEducationClasses() {
       const created = await response.json()
       setClasses((prev) => isEditing ? prev.map((item) => (item.id === created.id ? created : item)) : [created, ...prev])
       setFormStatus('success')
-      setFormMessage(isEditing ? 'Turma atualizada com sucesso.' : 'Turma cadastrada com sucesso.')
+      const successMessage = isEditing
+        ? 'Turma atualizada com sucesso.'
+        : `Turma cadastrada com sucesso${created?.code ? ` (código ${created.code}).` : '.'}`
+      setFormMessage(successMessage)
       setFormState(initialFormState)
       setEditingId(null)
     } catch (error) {
@@ -204,6 +206,16 @@ export function useEducationClasses() {
     refresh()
   }, [refresh])
 
+  const nextCode = useMemo(() => {
+    const numericCodes = classes
+      .map((item) => Number.parseInt(item?.code ?? '', 10))
+      .filter((value) => Number.isFinite(value) && value > 0)
+    if (!numericCodes.length) {
+      return 1
+    }
+    return Math.max(...numericCodes) + 1
+  }, [classes])
+
   return {
     units,
     classes,
@@ -219,6 +231,7 @@ export function useEducationClasses() {
     cancelEdit,
     editingId,
     isEditing: editingId !== null,
+    nextCode,
     deleteClass,
     refresh,
   }

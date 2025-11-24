@@ -11,15 +11,23 @@ function EducationClassesPage() {
     formStatus,
     formMessage,
     handleFormChange,
-    createClass,
+    saveClass,
     resetForm,
+    startEditing,
+    cancelEdit,
+    editingId,
+    isEditing,
     deleteClass,
     refresh,
   } = useEducationClasses()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    await createClass()
+    await saveClass()
+  }
+
+  const handleEditClass = (item) => {
+    startEditing(item)
   }
 
   return (
@@ -38,8 +46,12 @@ function EducationClassesPage() {
       <div className="classes-layout">
         <form className="classes-form" onSubmit={handleSubmit}>
           <div className="classes-form-header">
-            <h2>Nova turma</h2>
-            <p>Informe os dados básicos e selecione a unidade a que a turma pertence.</p>
+            <h2>{isEditing ? 'Editar turma' : 'Nova turma'}</h2>
+            <p>
+              {isEditing
+                ? 'Altere os dados da turma selecionada e confirme para salvar as mudanças.'
+                : 'Informe os dados básicos e selecione a unidade a que a turma pertence.'}
+            </p>
           </div>
 
           {formMessage && (
@@ -117,11 +129,31 @@ function EducationClassesPage() {
 
           <div className="classes-actions">
             <button type="submit" disabled={formStatus === 'submitting'}>
-              {formStatus === 'submitting' ? 'Salvando…' : 'Cadastrar turma'}
+              {formStatus === 'submitting'
+                ? 'Salvando…'
+                : isEditing
+                  ? 'Salvar alterações'
+                  : 'Cadastrar turma'}
             </button>
-            <button type="button" className="classes-reset" onClick={resetForm} disabled={formStatus === 'submitting'}>
-              Limpar
-            </button>
+            {isEditing ? (
+              <button
+                type="button"
+                className="classes-reset"
+                onClick={cancelEdit}
+                disabled={formStatus === 'submitting'}
+              >
+                Cancelar edição
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="classes-reset"
+                onClick={resetForm}
+                disabled={formStatus === 'submitting'}
+              >
+                Limpar
+              </button>
+            )}
           </div>
         </form>
 
@@ -144,15 +176,23 @@ function EducationClassesPage() {
           ) : (
             <ul className="classes-list">
               {classes.map((item) => (
-                <li key={item.id} className="classes-item">
+                <li
+                  key={item.id}
+                  className={`classes-item${editingId === item.id ? ' classes-item-editing' : ''}`.trim()}
+                >
                   <div className="classes-item-header">
                     <div>
                       <strong>{item.name}</strong>
                       <span className="classes-chip">Unidade: {item.educationUnitName}</span>
                     </div>
-                    <button type="button" onClick={() => deleteClass(item.id)}>
-                      Remover
-                    </button>
+                    <div className="classes-item-actions">
+                      <button type="button" onClick={() => handleEditClass(item)}>
+                        Editar
+                      </button>
+                      <button type="button" onClick={() => deleteClass(item.id)}>
+                        Remover
+                      </button>
+                    </div>
                   </div>
                   <dl>
                     {item.code && (

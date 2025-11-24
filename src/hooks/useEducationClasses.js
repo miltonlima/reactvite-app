@@ -20,6 +20,7 @@ export function useEducationClasses() {
   const [formState, setFormState] = useState(initialFormState)
   const [formStatus, setFormStatus] = useState('idle')
   const [formMessage, setFormMessage] = useState('')
+  const [editingId, setEditingId] = useState(null)
 
   const authorizedHeaders = useMemo(() => {
     if (!token) {
@@ -93,9 +94,10 @@ export function useEducationClasses() {
     setFormState(initialFormState)
     setFormStatus('idle')
     setFormMessage('')
+    setEditingId(null)
   }, [])
 
-  const createClass = useCallback(async () => {
+  const saveClass = useCallback(async () => {
     if (!authorizedHeaders) {
       setFormStatus('error')
       setFormMessage('Sua sessão expirou. Faça login novamente para cadastrar turmas.')
@@ -113,15 +115,24 @@ export function useEducationClasses() {
       description: formState.description.trim() || null,
     }
 
+    const isEditing = editingId !== null
+    const url = isEditing
+      ? `${API_BASE_URL}/api/education-classes/${editingId}`
+      : `${API_BASE_URL}/api/education-classes`
+    const method = isEditing ? 'PUT' : 'POST'
+    const failureMessage = isEditing
+      ? 'Não foi possível atualizar a turma.'
+      : 'Não foi possível cadastrar a turma.'
+
     try {
-      const response = await fetch(`${API_BASE_URL}/api/education-classes`, {
-        method: 'POST',
+      const response = await fetch(url, {
+        method,
         headers: authorizedHeaders,
         body: JSON.stringify(payload),
       })
 
       if (!response.ok) {
-        let message = 'Não foi possível cadastrar a turma.'
+        let message = failureMessage
         const contentType = response.headers.get('content-type')
         if (contentType && contentType.includes('application/json')) {
           const body = await response.json()
@@ -133,15 +144,33 @@ export function useEducationClasses() {
       }
 
       const created = await response.json()
-      setClasses((prev) => [created, ...prev])
+      setClasses((prev) => isEditing ? prev.map((item) => (item.id === created.id ? created : item)) : [created, ...prev])
       setFormStatus('success')
-      setFormMessage('Turma cadastrada com sucesso.')
+      setFormMessage(isEditing ? 'Turma atualizada com sucesso.' : 'Turma cadastrada com sucesso.')
       setFormState(initialFormState)
+      setEditingId(null)
     } catch (error) {
       setFormStatus('error')
-      setFormMessage(error instanceof Error ? error.message : 'Erro inesperado ao cadastrar a turma.')
+      setFormMessage(error instanceof Error ? error.message : failureMessage)
     }
-  }, [authorizedHeaders, formState])
+  }, [authorizedHeaders, editingId, formState])
+
+  const startEditing = useCallback((item) => {
+    setEditingId(item?.id ?? null)
+    setFormState({
+      educationUnitId: item?.educationUnitId ? String(item.educationUnitId) : '',
+      name: item?.name ?? '',
+      code: item?.code ?? '',
+      academicYear: item?.academicYear ?? '',
+      description: item?.description ?? '',
+    })
+    setFormStatus('idle')
+    setFormMessage('')
+  }, [])
+
+  const cancelEdit = useCallback(() => {
+    resetForm()
+  }, [resetForm])
 
   const deleteClass = useCallback(async (id) => {
     if (!authorizedHeaders) {
@@ -159,10 +188,13 @@ export function useEducationClasses() {
       }
 
       setClasses((prev) => prev.filter((item) => item.id !== id))
+      if (editingId === id) {
+        resetForm()
+      }
     } catch (error) {
       console.error('Erro ao remover a turma:', error)
     }
-  }, [authorizedHeaders])
+  }, [authorizedHeaders, editingId, resetForm])
 
   const refresh = useCallback(async () => {
     await Promise.all([fetchUnits(), fetchClasses()])
@@ -181,8 +213,12 @@ export function useEducationClasses() {
     formStatus,
     formMessage,
     handleFormChange,
-    createClass,
+    saveClass,
     resetForm,
+    startEditing,
+    cancelEdit,
+    editingId,
+    isEditing: editingId !== null,
     deleteClass,
     refresh,
   }

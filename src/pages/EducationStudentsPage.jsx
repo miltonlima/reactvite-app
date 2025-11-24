@@ -12,7 +12,11 @@ function EducationStudentsPage() {
     formStatus,
     formMessage,
     handleFormChange,
-    createStudent,
+    saveStudent,
+    startEditing,
+    cancelEdit,
+    editingId,
+    isEditing,
     resetForm,
     deleteStudent,
     refresh,
@@ -20,11 +24,15 @@ function EducationStudentsPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    await createStudent()
+    await saveStudent()
   }
 
   const handleDeleteStudent = async (studentId) => {
     await deleteStudent(studentId)
+  }
+
+  const handleEditStudent = (student) => {
+    startEditing(student)
   }
 
   return (
@@ -46,8 +54,12 @@ function EducationStudentsPage() {
       <div className="students-layout">
         <form className="students-form" onSubmit={handleSubmit}>
           <div className="students-form-header">
-            <h2>Novo aluno</h2>
-            <p>Preencha as informações básicas; depois acesse Inscrições para vincular turmas.</p>
+            <h2>{isEditing ? 'Editar aluno' : 'Novo aluno'}</h2>
+            <p>
+              {isEditing
+                ? 'Atualize os dados do aluno selecionado e salve as alterações.'
+                : 'Preencha as informações básicas; depois acesse Inscrições para vincular turmas.'}
+            </p>
           </div>
 
           {formMessage && (
@@ -61,7 +73,9 @@ function EducationStudentsPage() {
 
           <div className="students-grid">
             <p className="students-hint">
-              A matrícula é gerada automaticamente ao cadastrar o aluno.
+              {isEditing
+                ? 'A matrícula e as inscrições existentes do aluno serão preservadas.'
+                : 'A matrícula é gerada automaticamente ao cadastrar o aluno.'}
             </p>
 
             <label className="students-field students-field-full">
@@ -133,11 +147,31 @@ function EducationStudentsPage() {
 
           <div className="students-actions">
             <button type="submit" disabled={formStatus === 'submitting'}>
-              {formStatus === 'submitting' ? 'Salvando…' : 'Cadastrar aluno'}
+              {formStatus === 'submitting'
+                ? 'Salvando…'
+                : isEditing
+                  ? 'Salvar alterações'
+                  : 'Cadastrar aluno'}
             </button>
-            <button type="button" className="students-reset" onClick={resetForm} disabled={formStatus === 'submitting'}>
-              Limpar
-            </button>
+            {isEditing ? (
+              <button
+                type="button"
+                className="students-reset"
+                onClick={cancelEdit}
+                disabled={formStatus === 'submitting'}
+              >
+                Cancelar edição
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="students-reset"
+                onClick={resetForm}
+                disabled={formStatus === 'submitting'}
+              >
+                Limpar
+              </button>
+            )}
           </div>
         </form>
 
@@ -160,7 +194,10 @@ function EducationStudentsPage() {
           ) : (
             <ul className="students-list">
               {students.map((item) => (
-                <li key={item.id} className="students-item">
+                <li
+                  key={item.id}
+                  className={`students-item${editingId === item.id ? ' students-item-editing' : ''}`.trim()}
+                >
                   <div className="students-item-header">
                     <div>
                       <strong>{item.name}</strong>
@@ -172,6 +209,9 @@ function EducationStudentsPage() {
                       <Link to="/app/education-enrollments" className="students-manage-link">
                         Gerenciar inscrições
                       </Link>
+                      <button type="button" onClick={() => handleEditStudent(item)}>
+                        Editar
+                      </button>
                       <button type="button" onClick={() => handleDeleteStudent(item.id)}>
                         Remover aluno
                       </button>

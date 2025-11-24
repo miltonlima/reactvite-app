@@ -10,15 +10,23 @@ function EducationUnitsPage() {
     formStatus,
     formMessage,
     handleFormChange,
-    createUnit,
+    saveUnit,
     resetForm,
+    startEditing,
+    cancelEdit,
+    editingId,
+    isEditing,
     deleteUnit,
     refresh,
   } = useEducationUnits()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    await createUnit()
+    await saveUnit()
+  }
+
+  const handleEditUnit = (unit) => {
+    startEditing(unit)
   }
 
   return (
@@ -37,8 +45,12 @@ function EducationUnitsPage() {
       <div className="units-layout">
         <form className="units-form" onSubmit={handleSubmit}>
           <div className="units-form-header">
-            <h2>Nova unidade</h2>
-            <p>Informe os dados essenciais para identificar esta unidade dentro da rede de ensino.</p>
+            <h2>{isEditing ? 'Editar unidade' : 'Nova unidade'}</h2>
+            <p>
+              {isEditing
+                ? 'Atualize as informações da unidade selecionada e salve as alterações.'
+                : 'Informe os dados essenciais para identificar esta unidade dentro da rede de ensino.'}
+            </p>
           </div>
 
           {formMessage && (
@@ -111,11 +123,31 @@ function EducationUnitsPage() {
 
           <div className="units-actions">
             <button type="submit" disabled={formStatus === 'submitting'}>
-              {formStatus === 'submitting' ? 'Salvando…' : 'Cadastrar unidade'}
+              {formStatus === 'submitting'
+                ? 'Salvando…'
+                : isEditing
+                  ? 'Salvar alterações'
+                  : 'Cadastrar unidade'}
             </button>
-            <button type="button" className="units-reset" onClick={resetForm} disabled={formStatus === 'submitting'}>
-              Limpar formulário
-            </button>
+            {isEditing ? (
+              <button
+                type="button"
+                className="units-reset"
+                onClick={cancelEdit}
+                disabled={formStatus === 'submitting'}
+              >
+                Cancelar edição
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="units-reset"
+                onClick={resetForm}
+                disabled={formStatus === 'submitting'}
+              >
+                Limpar formulário
+              </button>
+            )}
           </div>
         </form>
 
@@ -138,15 +170,23 @@ function EducationUnitsPage() {
           ) : (
             <ul className="units-list">
               {items.map((unit) => (
-                <li key={unit.id} className="units-item">
+                <li
+                  key={unit.id}
+                  className={`units-item${editingId === unit.id ? ' units-item-editing' : ''}`.trim()}
+                >
                   <div className="units-item-header">
                     <div>
                       <strong>{unit.name}</strong>
                       <span className="units-chip">Código {unit.code}</span>
                     </div>
-                    <button type="button" onClick={() => deleteUnit(unit.id)}>
-                      Remover
-                    </button>
+                    <div className="units-item-actions">
+                      <button type="button" onClick={() => handleEditUnit(unit)}>
+                        Editar
+                      </button>
+                      <button type="button" onClick={() => deleteUnit(unit.id)}>
+                        Remover
+                      </button>
+                    </div>
                   </div>
                   <dl>
                     {(unit.city || unit.state) && (

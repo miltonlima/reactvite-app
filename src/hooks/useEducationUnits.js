@@ -19,6 +19,7 @@ export function useEducationUnits() {
   const [formState, setFormState] = useState(initialFormState)
   const [formStatus, setFormStatus] = useState('idle')
   const [formMessage, setFormMessage] = useState('')
+  const [editingId, setEditingId] = useState(null)
 
   const authorizedHeaders = useMemo(() => {
     if (!token) {
@@ -70,9 +71,10 @@ export function useEducationUnits() {
     setFormState(initialFormState)
     setFormStatus('idle')
     setFormMessage('')
+    setEditingId(null)
   }, [])
 
-  const createUnit = useCallback(async () => {
+  const saveUnit = useCallback(async () => {
     setFormStatus('submitting')
     setFormMessage('')
 
@@ -90,15 +92,25 @@ export function useEducationUnits() {
       description: formState.description.trim() || null,
     }
 
+    const isEditing = editingId !== null
+    const url = isEditing
+      ? `${API_BASE_URL}/api/education-units/${editingId}`
+      : `${API_BASE_URL}/api/education-units`
+    const method = isEditing ? 'PUT' : 'POST'
+
+    const failureMessage = isEditing
+      ? 'Não foi possível atualizar a unidade.'
+      : 'Não foi possível cadastrar a unidade.'
+
     try {
-      const response = await fetch(`${API_BASE_URL}/api/education-units`, {
-        method: 'POST',
+      const response = await fetch(url, {
+        method,
         headers: authorizedHeaders,
         body: JSON.stringify(payload),
       })
 
       if (!response.ok) {
-        let message = 'Não foi possível cadastrar a unidade.'
+        let message = failureMessage
         const contentType = response.headers.get('content-type')
         if (contentType && contentType.includes('application/json')) {
           const body = await response.json()
@@ -110,15 +122,33 @@ export function useEducationUnits() {
       }
 
       const created = await response.json()
-      setItems((prev) => [created, ...prev])
+      setItems((prev) => isEditing ? prev.map((unit) => (unit.id === created.id ? created : unit)) : [created, ...prev])
       setFormStatus('success')
-      setFormMessage('Unidade cadastrada com sucesso.')
+      setFormMessage(isEditing ? 'Unidade atualizada com sucesso.' : 'Unidade cadastrada com sucesso.')
       setFormState(initialFormState)
+      setEditingId(null)
     } catch (error) {
       setFormStatus('error')
-      setFormMessage(error instanceof Error ? error.message : 'Erro inesperado ao cadastrar a unidade.')
+      setFormMessage(error instanceof Error ? error.message : failureMessage)
     }
-  }, [authorizedHeaders, formState])
+  }, [authorizedHeaders, editingId, formState])
+
+  const startEditing = useCallback((unit) => {
+    setEditingId(unit?.id ?? null)
+    setFormState({
+      name: unit?.name ?? '',
+      code: unit?.code ?? '',
+      city: unit?.city ?? '',
+      state: unit?.state ?? '',
+      description: unit?.description ?? '',
+    })
+    setFormStatus('idle')
+    setFormMessage('')
+  }, [])
+
+  const cancelEdit = useCallback(() => {
+    resetForm()
+  }, [resetForm])
 
   const deleteUnit = useCallback(async (id) => {
     if (!id) {
@@ -140,10 +170,13 @@ export function useEducationUnits() {
       }
 
       setItems((prev) => prev.filter((unit) => unit.id !== id))
+      if (editingId === id) {
+        resetForm()
+      }
     } catch (error) {
       console.error('Erro ao remover a unidade:', error)
     }
-  }, [authorizedHeaders])
+  }, [authorizedHeaders, editingId, resetForm])
 
   useEffect(() => {
     fetchUnits()
@@ -157,8 +190,12 @@ export function useEducationUnits() {
     formStatus,
     formMessage,
     handleFormChange,
-    createUnit,
+    saveUnit,
     resetForm,
+    startEditing,
+    cancelEdit,
+    editingId,
+    isEditing: editingId !== null,
     deleteUnit,
     refresh: fetchUnits,
   }

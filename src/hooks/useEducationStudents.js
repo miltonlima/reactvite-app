@@ -24,6 +24,7 @@ export function useEducationStudents() {
   const [formState, setFormState] = useState(initialFormState)
   const [formStatus, setFormStatus] = useState('idle')
   const [formMessage, setFormMessage] = useState('')
+  const [editingId, setEditingId] = useState(null)
 
   const authorizedHeaders = useMemo(() => {
     if (!token) {
@@ -106,12 +107,13 @@ export function useEducationStudents() {
     setFormState(initialFormState)
     setFormStatus('idle')
     setFormMessage('')
+    setEditingId(null)
   }, [])
 
-  const createStudent = useCallback(async () => {
+  const saveStudent = useCallback(async () => {
     if (!authorizedHeaders) {
       setFormStatus('error')
-      setFormMessage('Sua sessão expirou. Faça login novamente para cadastrar alunos.')
+      setFormMessage('Sua sessão expirou. Faça login novamente para continuar.')
       return
     }
 
@@ -127,15 +129,24 @@ export function useEducationStudents() {
       notes: formState.notes.trim() || null,
     }
 
+    const isEditing = editingId !== null
+    const url = isEditing
+      ? `${API_BASE_URL}/api/education-students/${editingId}`
+      : `${API_BASE_URL}/api/education-students`
+    const method = isEditing ? 'PUT' : 'POST'
+    const failureMessage = isEditing
+      ? 'Não foi possível atualizar os dados do aluno.'
+      : 'Não foi possível cadastrar o aluno.'
+
     try {
-      const response = await fetch(`${API_BASE_URL}/api/education-students`, {
-        method: 'POST',
+      const response = await fetch(url, {
+        method,
         headers: authorizedHeaders,
         body: JSON.stringify(payload),
       })
 
       if (!response.ok) {
-        let message = 'Não foi possível cadastrar o aluno.'
+        let message = failureMessage
         const contentType = response.headers.get('content-type')
         if (contentType && contentType.includes('application/json')) {
           const body = await response.json()
@@ -146,16 +157,23 @@ export function useEducationStudents() {
         throw new Error(message)
       }
 
-      const created = await response.json()
-      setStudents((prev) => [created, ...prev])
+      const saved = await response.json()
+      setStudents((prev) =>
+        isEditing ? prev.map((student) => (student.id === saved.id ? saved : student)) : [saved, ...prev]
+      )
       setFormStatus('success')
-      setFormMessage('Aluno cadastrado com sucesso. Acesse a tela Inscrições para vincular turmas.')
+      setFormMessage(
+        isEditing
+          ? 'Dados do aluno atualizados com sucesso.'
+          : 'Aluno cadastrado com sucesso. Acesse a tela Inscrições para vincular turmas.'
+      )
       setFormState(initialFormState)
+      setEditingId(null)
     } catch (error) {
       setFormStatus('error')
-      setFormMessage(error instanceof Error ? error.message : 'Erro inesperado ao cadastrar o aluno.')
+      setFormMessage(error instanceof Error ? error.message : failureMessage)
     }
-  }, [authorizedHeaders, formState])
+  }, [authorizedHeaders, editingId, formState])
 
   const enrollStudent = useCallback(
     async (studentId, classId) => {
@@ -229,6 +247,24 @@ export function useEducationStudents() {
     [authorizedHeaders]
   )
 
+  const startEditing = useCallback((student) => {
+    setEditingId(student?.id ?? null)
+    setFormState({
+      name: student?.name ?? '',
+      cpf: formatCpfForDisplay(student?.cpf ?? ''),
+      birthDate: student?.birthDate ?? '',
+      guardianName: student?.guardianName ?? '',
+      guardianContact: student?.guardianContact ?? '',
+      notes: student?.notes ?? '',
+    })
+    setFormStatus('idle')
+    setFormMessage('')
+  }, [])
+
+  const cancelEdit = useCallback(() => {
+    resetForm()
+  }, [resetForm])
+
   const deleteStudent = useCallback(async (id) => {
     if (!authorizedHeaders) {
       return
@@ -245,10 +281,13 @@ export function useEducationStudents() {
       }
 
       setStudents((prev) => prev.filter((student) => student.id !== id))
+      if (editingId === id) {
+        resetForm()
+      }
     } catch (error) {
       console.error('Erro ao remover aluno:', error)
     }
-  }, [authorizedHeaders])
+  }, [authorizedHeaders, editingId, resetForm])
 
   const refresh = useCallback(async () => {
     await Promise.all([fetchClasses(), fetchStudents()])
@@ -267,7 +306,11 @@ export function useEducationStudents() {
     formStatus,
     formMessage,
     handleFormChange,
-    createStudent,
+    saveStudent,
+    startEditing,
+    cancelEdit,
+    editingId,
+    isEditing: editingId !== null,
     enrollStudent,
     unenrollStudent,
     resetForm,

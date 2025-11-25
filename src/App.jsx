@@ -30,13 +30,13 @@ function App() {
         }
       >
         <Route index element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="reports" element={<Reports />} />
+        <Route path="dashboard" element={<DashboardPage />} />        
         <Route path="new-registration" element={<NewForm />} />
         <Route path="education-units" element={<EducationUnitsPage />} />
         <Route path="education-classes" element={<EducationClassesPage />} />
         <Route path="education-students" element={<EducationStudentsPage />} />
         <Route path="education-enrollments" element={<EducationEnrollmentsPage />} />
+        <Route path="reports" element={<Reports />} />
         <Route path="profile" element={<ProfilePage />} />
       </Route>
 

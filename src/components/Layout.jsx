@@ -14,12 +14,12 @@ const Layout = () => {
         </div>
         <nav className="layout-nav">
           <Link to="dashboard">Dashboard</Link>
-          <Link to="reports">Relatórios</Link>
           <Link to="new-registration">Novo Cadastro</Link>
           <Link to="education-units">Unidades</Link>
           <Link to="education-classes">Turmas</Link>
           <Link to="education-students">Alunos</Link>
           <Link to="education-enrollments">Inscrições</Link>
+          <Link to="reports">Relatórios</Link>
           <Link to="profile">Meu Perfil</Link>
         </nav>
         <div className="layout-actions">

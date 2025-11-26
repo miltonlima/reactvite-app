@@ -13,12 +13,12 @@ const Layout = () => {
           <Link to="dashboard">App</Link>
         </div>
         <nav className="layout-nav">
-          <Link to="dashboard">Dashboard</Link>
-          <Link to="new-registration">Novo Cadastro</Link>
+          <Link to="dashboard">Dashboard</Link>          
           <Link to="education-units">Unidades</Link>
           <Link to="education-classes">Turmas</Link>
           <Link to="education-students">Alunos</Link>
           <Link to="education-enrollments">Inscrições</Link>
+          <Link to="new-registration">Cadastro</Link>
           <Link to="reports">Relatórios</Link>
           <Link to="profile">Meu Perfil</Link>
         </nav>

@@ -1,24 +1,86 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback, useRef } from 'react';
 import api from '../services/api';
 
 const AuthContext = createContext();
+
+const normalizeTheme = (value) => (value === 'light' ? 'light' : 'dark');
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState(() => normalizeTheme(localStorage.getItem('theme')));
+  const skipEffectFetchRef = useRef(false);
+
+  const applyThemeToDom = useCallback((value) => {
+    const normalized = normalizeTheme(value);
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    document.body.classList.remove('light-mode', 'dark-mode');
+    document.body.classList.add(`${normalized}-mode`);
+    document.documentElement.setAttribute('data-theme', normalized);
+    localStorage.setItem('theme', normalized);
+  }, []);
 
   useEffect(() => {
-    if (token) {
-      api.defaults.headers.Authorization = `Bearer ${token}`;
-      // Here you could fetch user data if you have an endpoint for it
-      // For now, we'll just assume the user is authenticated if there's a token
-      setUser({ authenticated: true }); 
-    }
-    setLoading(false);
-  }, [token]);
+    applyThemeToDom(theme);
+  }, [theme, applyThemeToDom]);
 
-  const login = async (email, password) => {
+  const fetchProfile = useCallback(async () => {
+    const { data } = await api.get('/users/me');
+    setUser(data);
+    const preferredTheme = normalizeTheme(data?.theme);
+    setTheme(preferredTheme);
+    return data;
+  }, []);
+
+  useEffect(() => {
+    if (!token) {
+      delete api.defaults.headers.Authorization;
+      setUser(null);
+      setLoading(false);
+      const storedTheme = normalizeTheme(localStorage.getItem('theme'));
+      setTheme(storedTheme);
+      return;
+    }
+
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+
+    if (skipEffectFetchRef.current) {
+      skipEffectFetchRef.current = false;
+      setLoading(false);
+      return;
+    }
+
+    let isMounted = true;
+    setLoading(true);
+
+    fetchProfile()
+      .catch((error) => {
+        console.error('Failed to fetch profile', error);
+        if (!isMounted) {
+          return;
+        }
+        setUser(null);
+        setTheme('dark');
+        localStorage.removeItem('token');
+        delete api.defaults.headers.Authorization;
+        setToken(null);
+      })
+      .finally(() => {
+        if (isMounted) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [token, fetchProfile]);
+
+  const login = useCallback(async (email, password) => {
     try {
       const { data } = await api.post('/login', { email, password });
       const authToken = data?.token ?? data?.Token;
@@ -29,31 +91,62 @@ export const AuthProvider = ({ children }) => {
       setToken(authToken);
       localStorage.setItem('token', authToken);
       api.defaults.headers.Authorization = `Bearer ${authToken}`;
-      setUser(data?.user ?? { authenticated: true });
+
+      skipEffectFetchRef.current = true;
+      setLoading(true);
+      const profile = await fetchProfile();
+      setLoading(false);
+      return profile;
     } catch (error) {
       console.error('Login failed', error);
+      setLoading(false);
+      localStorage.removeItem('token');
+      delete api.defaults.headers.Authorization;
+      setToken(null);
+      setUser(null);
+      setTheme('dark');
       throw error;
     }
-  };
+  }, [fetchProfile]);
 
-  const register = async (userData) => {
+  const register = useCallback(async (userData) => {
     try {
       await api.post('/registrations', userData);
     } catch (error) {
       console.error('Registration failed', error);
       throw error;
     }
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setToken(null);
     setUser(null);
+    setTheme('dark');
     localStorage.removeItem('token');
     delete api.defaults.headers.Authorization;
-  };
+    applyThemeToDom('dark');
+  }, [applyThemeToDom]);
+
+  const updateThemePreference = useCallback((value) => {
+    const normalized = normalizeTheme(value);
+    setTheme(normalized);
+    setUser((prev) => (prev ? { ...prev, theme: normalized } : prev));
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ token, user, login, register, logout, loading }}>
+    <AuthContext.Provider
+      value={{
+        token,
+        user,
+        theme,
+        loading,
+        login,
+        register,
+        logout,
+        updateThemePreference,
+        refreshProfile: fetchProfile,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

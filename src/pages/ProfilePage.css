@@ -41,8 +41,9 @@
   max-width: 640px;
 }
 
-.profile-grid {
-  display: grid;
+.profile-field input,
+.profile-field textarea,
+.profile-field select {
   gap: 1.5rem;
   align-items: start;
 }
@@ -51,10 +52,21 @@
   .profile-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+.profile-field select {
+  appearance: none;
+  cursor: pointer;
+}
+
 }
 
 .profile-card {
   display: flex;
+
+.profile-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(203, 213, 225, 0.72);
+}
   flex-direction: column;
   gap: 1rem;
   padding: 1.75rem;

@@ -1,0 +1,264 @@
+body.dark-mode {
+  color: #e2e8f0;
+  background: radial-gradient(circle at top, rgba(99, 102, 241, 0.35) 0%, rgba(15, 23, 42, 1) 55%);
+}
+
+body.light-mode {
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+body.light-mode a {
+  color: #1d4ed8;
+}
+
+body.light-mode .layout-container {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+body.light-mode .layout-header,
+body.light-mode .units-header,
+body.light-mode .classes-header,
+body.light-mode .students-header,
+body.light-mode .enrollments-header,
+body.light-mode .profile-header,
+body.light-mode .reports-header {
+  background: #ffffff;
+  border: 1px solid #dbeafe !important;
+  color: #0f172a;
+  box-shadow: 0 22px 48px -28px rgba(59, 130, 246, 0.18);
+}
+
+body.light-mode .layout-nav a {
+  color: #1f2937;
+}
+
+body.light-mode .layout-nav a:hover,
+body.light-mode .layout-nav a:focus-visible {
+  color: #1d4ed8;
+}
+
+body.light-mode .layout-main {
+  background: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 26px 60px -38px rgba(15, 23, 42, 0.18);
+  color: #0f172a;
+}
+
+body.light-mode .logout-button {
+  background: #e2e8f0;
+  color: #0f172a;
+  border: 1px solid #cbd5f5;
+}
+
+body.light-mode .logout-button:hover,
+body.light-mode .logout-button:focus-visible {
+  background: linear-gradient(135deg, #60a5fa, #38bdf8);
+  color: #0f172a;
+}
+
+body.light-mode .students-page,
+body.light-mode .classes-page,
+body.light-mode .units-page,
+body.light-mode .enrollments-page,
+body.light-mode .profile-page,
+body.light-mode .reports,
+body.light-mode .modern-form,
+body.light-mode .simple-layout {
+  color: #1f2937;
+}
+
+body.light-mode .students-header p,
+body.light-mode .classes-header p,
+body.light-mode .units-header p,
+body.light-mode .enrollments-header p,
+body.light-mode .profile-header p,
+body.light-mode .reports-header p {
+  color: #475569;
+}
+
+body.light-mode .students-form,
+body.light-mode .students-list-card,
+body.light-mode .classes-form,
+body.light-mode .classes-list-card,
+body.light-mode .units-form,
+body.light-mode .units-list-card,
+body.light-mode .enrollments-card,
+body.light-mode .profile-card,
+body.light-mode .reports-table-wrapper,
+body.light-mode .reports-detail,
+body.light-mode .reports-detail-grid div,
+body.light-mode .reports-empty,
+body.light-mode .form,
+body.light-mode .modern-form,
+body.light-mode .simple-card,
+body.light-mode .simple-summary,
+body.light-mode .submitted,
+body.light-mode .students-item,
+body.light-mode .classes-item,
+body.light-mode .units-item,
+body.light-mode .enrollments-item,
+body.light-mode .students-placeholder,
+body.light-mode .classes-placeholder,
+body.light-mode .units-placeholder,
+body.light-mode .enrollments-placeholder {
+  background: #ffffff;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 22px 48px -32px rgba(15, 23, 42, 0.15);
+  color: #0f172a;
+}
+
+body.light-mode .students-form-header p,
+body.light-mode .students-list-header p,
+body.light-mode .classes-form-header p,
+body.light-mode .classes-list-header p,
+body.light-mode .units-form-header p,
+body.light-mode .units-list-header p,
+body.light-mode .enrollments-card-header p,
+body.light-mode .profile-description,
+body.light-mode .profile-hint,
+body.light-mode .reports-detail-header p {
+  color: #475569;
+}
+
+body.light-mode .students-field span,
+body.light-mode .classes-field span,
+body.light-mode .units-field span,
+body.light-mode .enrollments-field span,
+body.light-mode .profile-field span {
+  color: #1f2937;
+}
+
+body.light-mode .students-hint,
+body.light-mode .classes-hint,
+body.light-mode .units-hint,
+body.light-mode .enrollments-hint {
+  color: #475569;
+}
+
+body.light-mode .students-chip,
+body.light-mode .classes-chip,
+body.light-mode .units-chip,
+body.light-mode .enrollments-chip {
+  background: #e0f2fe;
+  color: #1e3a8a;
+}
+
+body.light-mode .students-enrollment-empty,
+body.light-mode .classes-placeholder,
+body.light-mode .units-placeholder,
+body.light-mode .enrollments-placeholder,
+body.light-mode .enrollments-current-list span {
+  color: #475569;
+}
+
+body.light-mode .students-item-actions button:first-of-type,
+body.light-mode .classes-item-actions button:first-of-type,
+body.light-mode .units-item-actions button:first-of-type,
+body.light-mode .enrollments-item-actions button:first-of-type {
+  background: #dbeafe;
+  color: #1f2937;
+}
+
+body.light-mode .students-item-actions button:last-of-type,
+body.light-mode .classes-item-actions button:last-of-type,
+body.light-mode .units-item-actions button:last-of-type,
+body.light-mode .enrollments-item-actions button:last-of-type {
+  background: rgba(248, 113, 113, 0.2);
+  color: #b91c1c;
+}
+
+body.light-mode .enrollments-item-body {
+  background: #f8fafc;
+  border-color: #dbeafe;
+}
+
+body.light-mode .enrollments-subtitle {
+  color: #1d4ed8;
+}
+
+body.light-mode .students-item dl div,
+body.light-mode .classes-item dl div,
+body.light-mode .units-item dl div,
+body.light-mode .enrollments-item dl div {
+  background: #f8fafc;
+}
+
+body.light-mode .students-item dt,
+body.light-mode .classes-item dt,
+body.light-mode .units-item dt,
+body.light-mode .enrollments-item dt,
+body.light-mode .reports-detail-grid dt {
+  color: #1d4ed8;
+}
+
+body.light-mode .students-item dd,
+body.light-mode .classes-item dd,
+body.light-mode .units-item dd,
+body.light-mode .enrollments-item dd,
+body.light-mode .reports-detail-grid dd {
+  color: #1f2937;
+}
+
+body.light-mode .reports-table thead {
+  background: #eff6ff;
+}
+
+body.light-mode .reports-table th {
+  color: #1e3a8a;
+}
+
+body.light-mode .reports-table td {
+  color: #1f2937;
+}
+
+body.light-mode .reports-table tbody tr:hover {
+  background: #e0f2fe;
+}
+
+body.light-mode .profile-field input,
+body.light-mode .profile-field textarea,
+body.light-mode .profile-field select,
+body.light-mode .students-field input,
+body.light-mode .students-field textarea,
+body.light-mode .students-field select,
+body.light-mode .classes-field input,
+body.light-mode .classes-field textarea,
+body.light-mode .classes-field select,
+body.light-mode .units-field input,
+body.light-mode .units-field textarea,
+body.light-mode .units-field select,
+body.light-mode .enrollments-field input,
+body.light-mode .enrollments-field textarea,
+body.light-mode .enrollments-field select {
+  background: #ffffff;
+  border: 1px solid #cbd5f5;
+  color: #0f172a;
+}
+
+body.light-mode .students-alert,
+body.light-mode .classes-alert,
+body.light-mode .units-alert,
+body.light-mode .enrollments-alert,
+body.light-mode .profile-alert {
+  color: #0f172a;
+}
+
+body.light-mode .login-container,
+body.light-mode .register-container {
+  background-color: #f8fafc;
+}
+
+body.light-mode .login-card,
+body.light-mode .register-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 22px 48px -28px rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+}
+
+body.light-mode .login-header p,
+body.light-mode .register-header p {
+  color: #475569;
+}

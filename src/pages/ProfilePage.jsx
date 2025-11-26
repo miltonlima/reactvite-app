@@ -9,6 +9,7 @@ const emptyProfile = {
   birthDate: '',
   cpf: '',
   description: '',
+  theme: 'dark',
 };
 
 const initialPasswordState = {
@@ -18,7 +19,7 @@ const initialPasswordState = {
 };
 
 function ProfilePage() {
-  const { token, logout } = useAuth();
+  const { token, logout, updateThemePreference, theme: preferredTheme } = useAuth();
   const [profile, setProfile] = useState(emptyProfile);
   const [profileStatus, setProfileStatus] = useState('idle');
   const [profileMessage, setProfileMessage] = useState('');
@@ -47,6 +48,7 @@ function ProfilePage() {
           birthDate: data?.birthDate ? String(data.birthDate).slice(0, 10) : '',
           cpf: data?.cpf ?? '',
           description: data?.description ?? '',
+          theme: data?.theme ?? preferredTheme ?? 'dark',
         });
       } catch (error) {
         console.error('Failed to load profile', error);
@@ -58,7 +60,7 @@ function ProfilePage() {
     };
 
     loadProfile();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, preferredTheme]);
 
   const handleProfileChange = (event) => {
     const { name, value } = event.target;
@@ -90,10 +92,12 @@ function ProfilePage() {
         birthDate: profile.birthDate || null,
         cpf: profile.cpf.trim() || null,
         description: profile.description.trim() || null,
+        theme: profile.theme,
       });
 
       setProfileStatus('success');
       setProfileMessage('Seus dados foram atualizados.');
+      updateThemePreference(profile.theme);
     } catch (error) {
       console.error('Failed to update profile', error);
       const apiMessage = error.response?.data?.message;
@@ -236,6 +240,20 @@ function ProfilePage() {
                 placeholder="Compartilhe informações que considere relevantes."
                 rows={3}
               />
+            </label>
+
+            <label className="profile-field" htmlFor="profile-theme">
+              <span>Tema preferido</span>
+              <select
+                id="profile-theme"
+                name="theme"
+                value={profile.theme}
+                onChange={handleProfileChange}
+              >
+                <option value="dark">Escuro</option>
+                <option value="light">Claro</option>
+              </select>
+              <p className="profile-hint">Escolha como a interface deve aparecer após salvar.</p>
             </label>
 
             <div className="profile-actions">

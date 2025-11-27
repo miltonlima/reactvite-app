@@ -11,6 +11,7 @@ import EducationUnitsPage from './pages/EducationUnitsPage';
 import EducationClassesPage from './pages/EducationClassesPage';
 import EducationStudentsPage from './pages/EducationStudentsPage';
 import EducationEnrollmentsPage from './pages/EducationEnrollmentsPage';
+import EducationGradesPage from './pages/EducationGradesPage';
 import './App.css';
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route path="new-registration" element={<NewForm />} />
         <Route path="education-units" element={<EducationUnitsPage />} />
         <Route path="education-classes" element={<EducationClassesPage />} />
+        <Route path="education-grades" element={<EducationGradesPage />} />
         <Route path="education-students" element={<EducationStudentsPage />} />
         <Route path="education-enrollments" element={<EducationEnrollmentsPage />} />
         <Route path="reports" element={<Reports />} />

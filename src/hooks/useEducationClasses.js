@@ -8,6 +8,7 @@ const initialFormState = {
   name: '',
   code: '',
   academicYear: '',
+  capacity: '',
   description: '',
 }
 
@@ -107,10 +108,22 @@ export function useEducationClasses() {
     setFormStatus('submitting')
     setFormMessage('')
 
+    const capacityInput = typeof formState.capacity === 'string' ? formState.capacity.trim() : formState.capacity;
+    const capacityParsed = capacityInput === '' || capacityInput === null || capacityInput === undefined
+      ? null
+      : Number.parseInt(capacityInput, 10);
+
+    if (capacityParsed !== null && (!Number.isFinite(capacityParsed) || capacityParsed <= 0)) {
+      setFormStatus('error')
+      setFormMessage('Informe um número de vagas válido (maior que zero).')
+      return
+    }
+
     const payload = {
       educationUnitId: Number(formState.educationUnitId),
       name: formState.name.trim(),
       academicYear: formState.academicYear.trim() || null,
+      capacity: capacityParsed,
       description: formState.description.trim() || null,
     }
 
@@ -147,7 +160,7 @@ export function useEducationClasses() {
       setFormStatus('success')
       const successMessage = isEditing
         ? 'Turma atualizada com sucesso.'
-        : `Turma cadastrada com sucesso${created?.code ? ` (código ${created.code}).` : '.'}`
+        : `Turma cadastrada com sucesso${created?.code ? ` (código ${created.code})` : ''}${created?.capacity ? ` com ${created.capacity} vaga(s).` : '.'}`
       setFormMessage(successMessage)
       setFormState(initialFormState)
       setEditingId(null)
@@ -164,6 +177,7 @@ export function useEducationClasses() {
       name: item?.name ?? '',
       code: item?.code ?? '',
       academicYear: item?.academicYear ?? '',
+      capacity: item?.capacity != null ? String(item.capacity) : '',
       description: item?.description ?? '',
     })
     setFormStatus('idle')

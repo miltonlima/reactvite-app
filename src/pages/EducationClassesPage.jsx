@@ -122,6 +122,21 @@ function EducationClassesPage() {
               />
             </label>
 
+            <label className="classes-field">
+              <span>Vagas disponíveis *</span>
+              <input
+                type="number"
+                min={1}
+                step={1}
+                name="capacity"
+                value={formState.capacity}
+                onChange={handleFormChange}
+                placeholder="Quantidade de vagas"
+                inputMode="numeric"
+                required
+              />
+            </label>
+
             <label className="classes-field classes-field-full">
               <span>Descrição</span>
               <textarea
@@ -191,6 +206,9 @@ function EducationClassesPage() {
                     <div>
                       <strong>{item.name}</strong>
                       <span className="classes-chip">Unidade: {item.educationUnitName}</span>
+                      {typeof item.capacity === 'number' && (
+                        <span className="classes-chip">Vagas: {item.capacity}</span>
+                      )}
                     </div>
                     <div className="classes-item-actions">
                       <button type="button" onClick={() => handleEditClass(item)}>
@@ -212,6 +230,12 @@ function EducationClassesPage() {
                       <div>
                         <dt>Ano/Etapa</dt>
                         <dd>{item.academicYear}</dd>
+                      </div>
+                    )}
+                    {typeof item.capacity === 'number' && (
+                      <div>
+                        <dt>Vagas disponíveis</dt>
+                        <dd>{item.capacity}</dd>
                       </div>
                     )}
                     {item.description && (

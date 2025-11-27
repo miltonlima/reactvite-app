@@ -32,6 +32,18 @@ function EducationClassesPage() {
   }
 
   const codeFieldValue = isEditing ? (formState.code ?? '') : (nextCode ? String(nextCode) : '')
+  const formatDate = (value) => {
+    if (!value) {
+      return null
+    }
+
+    const parsed = new Date(value)
+    if (Number.isNaN(parsed.getTime())) {
+      return null
+    }
+
+    return parsed.toLocaleDateString('pt-BR')
+  }
 
   return (
     <section className="classes-page" aria-labelledby="classes-title">
@@ -119,6 +131,27 @@ function EducationClassesPage() {
                 value={formState.academicYear}
                 onChange={handleFormChange}
                 placeholder="2025 / Ensino Fundamental"
+              />
+            </label>
+
+            <label className="classes-field">
+              <span>Data de início</span>
+              <input
+                type="date"
+                name="startDate"
+                value={formState.startDate}
+                onChange={handleFormChange}
+              />
+            </label>
+
+            <label className="classes-field">
+              <span>Data de fim</span>
+              <input
+                type="date"
+                name="endDate"
+                value={formState.endDate}
+                onChange={handleFormChange}
+                min={formState.startDate || undefined}
               />
             </label>
 
@@ -230,6 +263,16 @@ function EducationClassesPage() {
                       <div>
                         <dt>Ano/Etapa</dt>
                         <dd>{item.academicYear}</dd>
+                      </div>
+                    )}
+                    {(item.startDate || item.endDate) && (
+                      <div>
+                        <dt>Período</dt>
+                        <dd>
+                          {formatDate(item.startDate) ?? '—'}
+                          {' '}até{' '}
+                          {formatDate(item.endDate) ?? '—'}
+                        </dd>
                       </div>
                     )}
                     {typeof item.capacity === 'number' && (

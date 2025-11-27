@@ -8,8 +8,23 @@ const initialFormState = {
   name: '',
   code: '',
   academicYear: '',
+  startDate: '',
+  endDate: '',
   capacity: '',
   description: '',
+}
+
+const toDateInputValue = (value) => {
+  if (!value) {
+    return ''
+  }
+
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) {
+    return ''
+  }
+
+  return parsed.toISOString().slice(0, 10)
 }
 
 export function useEducationClasses() {
@@ -92,7 +107,7 @@ export function useEducationClasses() {
   }, [])
 
   const resetForm = useCallback(() => {
-    setFormState(initialFormState)
+    setFormState(() => ({ ...initialFormState }))
     setFormStatus('idle')
     setFormMessage('')
     setEditingId(null)
@@ -119,10 +134,21 @@ export function useEducationClasses() {
       return
     }
 
+    const startDateValue = typeof formState.startDate === 'string' ? formState.startDate.trim() : formState.startDate
+    const endDateValue = typeof formState.endDate === 'string' ? formState.endDate.trim() : formState.endDate
+
+    if (startDateValue && endDateValue && new Date(startDateValue) > new Date(endDateValue)) {
+      setFormStatus('error')
+      setFormMessage('A data de início deve ser anterior ou igual à data de fim.')
+      return
+    }
+
     const payload = {
       educationUnitId: Number(formState.educationUnitId),
       name: formState.name.trim(),
       academicYear: formState.academicYear.trim() || null,
+      startDate: startDateValue || null,
+      endDate: endDateValue || null,
       capacity: capacityParsed,
       description: formState.description.trim() || null,
     }
@@ -162,7 +188,7 @@ export function useEducationClasses() {
         ? 'Turma atualizada com sucesso.'
         : `Turma cadastrada com sucesso${created?.code ? ` (código ${created.code})` : ''}${created?.capacity ? ` com ${created.capacity} vaga(s).` : '.'}`
       setFormMessage(successMessage)
-      setFormState(initialFormState)
+      setFormState(() => ({ ...initialFormState }))
       setEditingId(null)
     } catch (error) {
       setFormStatus('error')
@@ -177,6 +203,8 @@ export function useEducationClasses() {
       name: item?.name ?? '',
       code: item?.code ?? '',
       academicYear: item?.academicYear ?? '',
+      startDate: toDateInputValue(item?.startDate),
+      endDate: toDateInputValue(item?.endDate),
       capacity: item?.capacity != null ? String(item.capacity) : '',
       description: item?.description ?? '',
     })

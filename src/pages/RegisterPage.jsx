@@ -15,6 +15,15 @@ const RegisterPage = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+      return;
+    }
+
+    navigate('/login');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -33,6 +42,9 @@ const RegisterPage = () => {
   return (
     <div className="login-container">
       <div className="login-card">
+        <button type="button" className="login-back-button" onClick={handleBack}>
+          {'< Voltar'}
+        </button>
         <header className="login-header">
           <h2>Criar uma conta</h2>
           <p>Preencha os dados para se registrar.</p>

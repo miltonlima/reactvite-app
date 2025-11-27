@@ -62,12 +62,16 @@
 .units-layout {
   display: grid;
   gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  align-items: start;
 }
 
-@media (min-width: 1080px) {
-  .units-layout {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  }
+.units-form {
+  grid-column: 1 / -1;
+}
+
+.units-list-card {
+  grid-column: 1 / -1;
 }
 
 .units-form,

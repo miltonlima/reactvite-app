@@ -80,7 +80,7 @@ const LoginPage = () => {
           </div>
         </form>
         <p style={{ textAlign: 'center', marginTop: '1rem' }}>
-          Não tem uma conta? <a href="/register" style={{ color: '#6366f1' }}>Registre-se</a>
+          Não tem uma conta3? <a href="/register" style={{ color: '#6366f1' }}>Registre-se</a>
         </p>
       </div>
     </div>

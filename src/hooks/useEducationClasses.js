@@ -10,6 +10,7 @@ const initialFormState = {
   academicYear: '',
   startDate: '',
   endDate: '',
+  scheduleTime: '',
   capacity: '',
   description: '',
 }
@@ -136,6 +137,7 @@ export function useEducationClasses() {
 
     const startDateValue = typeof formState.startDate === 'string' ? formState.startDate.trim() : formState.startDate
     const endDateValue = typeof formState.endDate === 'string' ? formState.endDate.trim() : formState.endDate
+    const scheduleTimeValue = typeof formState.scheduleTime === 'string' ? formState.scheduleTime.trim() : ''
 
     if (startDateValue && endDateValue && new Date(startDateValue) > new Date(endDateValue)) {
       setFormStatus('error')
@@ -149,6 +151,7 @@ export function useEducationClasses() {
       academicYear: formState.academicYear.trim() || null,
       startDate: startDateValue || null,
       endDate: endDateValue || null,
+      scheduleTime: scheduleTimeValue === '' ? '' : scheduleTimeValue,
       capacity: capacityParsed,
       description: formState.description.trim() || null,
     }
@@ -205,6 +208,7 @@ export function useEducationClasses() {
       academicYear: item?.academicYear ?? '',
       startDate: toDateInputValue(item?.startDate),
       endDate: toDateInputValue(item?.endDate),
+      scheduleTime: item?.scheduledTime ?? '',
       capacity: item?.capacity != null ? String(item.capacity) : '',
       description: item?.description ?? '',
     })

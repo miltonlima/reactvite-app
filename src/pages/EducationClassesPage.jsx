@@ -1,6 +1,8 @@
 import './EducationClassesPage.css'
 import { useEducationClasses } from '../hooks/useEducationClasses'
 
+const AVAILABLE_SCHEDULE_TIMES = Array.from({ length: 16 }, (_, index) => `${String(7 + index).padStart(2, '0')}:00`)
+
 function EducationClassesPage() {
   const {
     units,
@@ -156,6 +158,22 @@ function EducationClassesPage() {
             </label>
 
             <label className="classes-field">
+              <span>Horário</span>
+              <select
+                name="scheduleTime"
+                value={formState.scheduleTime}
+                onChange={handleFormChange}
+              >
+                <option value="">Selecione um horário</option>
+                {AVAILABLE_SCHEDULE_TIMES.map((time) => (
+                  <option key={time} value={time}>
+                    {time}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="classes-field">
               <span>Vagas disponíveis *</span>
               <input
                 type="number"
@@ -273,6 +291,12 @@ function EducationClassesPage() {
                           {' '}até{' '}
                           {formatDate(item.endDate) ?? '—'}
                         </dd>
+                      </div>
+                    )}
+                    {item.scheduledTime && (
+                      <div>
+                        <dt>Horário</dt>
+                        <dd>{item.scheduledTime}</dd>
                       </div>
                     )}
                     {typeof item.capacity === 'number' && (

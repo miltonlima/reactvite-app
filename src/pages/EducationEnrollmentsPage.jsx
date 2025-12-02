@@ -1,5 +1,5 @@
 import './EducationEnrollmentsPage.css'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useEducationStudents } from '../hooks/useEducationStudents'
 
 function EducationEnrollmentsPage() {
@@ -15,63 +15,92 @@ function EducationEnrollmentsPage() {
     refresh,
   } = useEducationStudents()
 
-  const handleSelectionChange = (studentId, value) => {
+  const handleSelectionChange = (classId, value) => {
     setSelections((prev) => ({
       ...prev,
-      [studentId]: value,
+      [classId]: value,
     }))
     setFeedback((prev) => ({
       ...prev,
-      [studentId]: prev[studentId]?.status === 'error' ? { status: 'idle', message: '' } : prev[studentId],
+      [classId]: prev[classId]?.status === 'error' ? { status: 'idle', message: '' } : prev[classId],
     }))
   }
 
-  const updateFeedback = (studentId, statusValue, message) => {
+  const updateFeedback = (classId, statusValue, message) => {
     setFeedback((prev) => ({
       ...prev,
-      [studentId]: { status: statusValue, message },
+      [classId]: { status: statusValue, message },
     }))
   }
 
-  const handleEnroll = async (studentId) => {
-    const selectedClass = selections[studentId]
-    if (!selectedClass) {
-      updateFeedback(studentId, 'error', 'Selecione uma turma para vincular o aluno.')
+  const handleEnroll = async (classId) => {
+    const selectedStudent = selections[classId]
+    if (!selectedStudent) {
+      updateFeedback(classId, 'error', 'Selecione um aluno para vincular à disciplina.')
       return
     }
 
-    updateFeedback(studentId, 'loading', 'Vinculando aluno à turma…')
+    updateFeedback(classId, 'loading', 'Vinculando aluno à disciplina…')
 
     try {
-      await enrollStudent(studentId, Number(selectedClass))
-      updateFeedback(studentId, 'success', 'Turma adicionada com sucesso.')
+      await enrollStudent(Number(selectedStudent), Number(classId))
+      updateFeedback(classId, 'success', 'Aluno vinculado com sucesso.')
       setSelections((prev) => ({
         ...prev,
-        [studentId]: '',
+        [classId]: '',
       }))
     } catch (error) {
       updateFeedback(
-        studentId,
+        classId,
         'error',
-        error instanceof Error ? error.message : 'Erro inesperado ao vincular o aluno à turma.'
+        error instanceof Error ? error.message : 'Erro inesperado ao vincular o aluno à disciplina.'
       )
     }
   }
 
-  const handleUnenroll = async (studentId, classId) => {
-    updateFeedback(studentId, 'loading', 'Removendo turma do aluno…')
+  const handleUnenroll = async (classId, studentId) => {
+    updateFeedback(classId, 'loading', 'Removendo aluno da disciplina…')
 
     try {
-      await unenrollStudent(studentId, classId)
-      updateFeedback(studentId, 'success', 'Turma removida com sucesso.')
+      await unenrollStudent(Number(studentId), Number(classId))
+      updateFeedback(classId, 'success', 'Aluno removido com sucesso.')
     } catch (error) {
       updateFeedback(
-        studentId,
+        classId,
         'error',
-        error instanceof Error ? error.message : 'Erro inesperado ao remover a turma do aluno.'
+        error instanceof Error ? error.message : 'Erro inesperado ao remover o aluno da disciplina.'
       )
     }
   }
+
+  const classesWithEnrollments = useMemo(() => {
+    return classes.map((educationClass) => {
+      const enrollmentsForClass = students.reduce((accumulator, student) => {
+        const enrollment = Array.isArray(student.enrollments)
+          ? student.enrollments.find((entry) => entry.educationClassId === educationClass.id)
+          : null
+
+        if (enrollment) {
+          accumulator.push({ student, enrollment })
+        }
+
+        return accumulator
+      }, [])
+
+      enrollmentsForClass.sort((a, b) => a.student.name.localeCompare(b.student.name, 'pt-BR'))
+
+      const availableStudents = students
+        .filter((student) => !enrollmentsForClass.some((entry) => entry.student.id === student.id))
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'))
+
+      return {
+        educationClass,
+        enrollments: enrollmentsForClass,
+        availableStudents,
+      }
+    })
+  }, [classes, students])
 
   return (
     <section className="enrollments-page" aria-labelledby="enrollments-title">
@@ -88,10 +117,8 @@ function EducationEnrollmentsPage() {
 
       <div className="enrollments-card">
         <div className="enrollments-card-header">
-          <h2>Inscrições por aluno</h2>
-          <p>
-            Use os controles abaixo para vincular alunos às turmas disponíveis ou remover inscrições já registradas.
-          </p>
+          <h2>Inscrições por disciplina</h2>
+          <p>Gerencie em cada disciplina quais alunos estão vinculados, adicionando ou removendo participantes.</p>
         </div>
 
         {classes.length === 0 && (
@@ -106,55 +133,55 @@ function EducationEnrollmentsPage() {
           </div>
         )}
 
-        {status === 'loading' && !students.length ? (
+        {status === 'loading' && !classes.length ? (
           <p className="enrollments-placeholder">Carregando inscrições…</p>
+        ) : classes.length === 0 ? (
+          <p className="enrollments-placeholder">Cadastre turmas antes de gerenciar inscrições.</p>
         ) : students.length === 0 ? (
-          <p className="enrollments-placeholder">Cadastre alunos antes de gerenciar inscrições.</p>
+          <p className="enrollments-placeholder">Cadastre alunos antes de vincular disciplinas.</p>
         ) : (
           <ul className="enrollments-list">
-            {students.map((student) => {
-              const enrollments = Array.isArray(student.enrollments) ? student.enrollments : []
-              const availableClasses = classes.filter(
-                (educationClass) =>
-                  !enrollments.some((enrollment) => enrollment.educationClassId === educationClass.id)
-              )
-              const studentFeedback = feedback[student.id]
-              const selection = selections[student.id] ?? ''
+            {classesWithEnrollments.map(({ educationClass, enrollments: classEnrollments, availableStudents }) => {
+              const classFeedback = feedback[educationClass.id]
+              const selection = selections[educationClass.id] ?? ''
               const subtitle =
-                enrollments.length === 0
-                  ? 'Nenhuma turma vinculada'
-                  : enrollments.length === 1
-                    ? '1 turma vinculada'
-                    : `${enrollments.length} turmas vinculadas`
+                classEnrollments.length === 0
+                  ? 'Nenhum aluno vinculado'
+                  : classEnrollments.length === 1
+                    ? '1 aluno vinculado'
+                    : `${classEnrollments.length} alunos vinculados`
 
               return (
-                <li key={student.id} className="enrollments-item">
+                <li key={educationClass.id} className="enrollments-item">
                   <header className="enrollments-item-header">
                     <div>
-                      <strong>{student.name}</strong>
-                      {student.registrationCode && (
-                        <span className="enrollments-chip">Matrícula: {student.registrationCode}</span>
+                      <strong>{educationClass.name}</strong>
+                      <span className="enrollments-chip">Unidade: {educationClass.educationUnitName}</span>
+                      {educationClass.scheduledTime && (
+                        <span className="enrollments-chip">Horário: {educationClass.scheduledTime}</span>
                       )}
                     </div>
                     <span className="enrollments-subtitle">{subtitle}</span>
                   </header>
 
                   <div className="enrollments-item-body">
-                    {enrollments.length > 0 ? (
+                    {classEnrollments.length > 0 ? (
                       <ul className="enrollments-current-list">
-                        {enrollments.map((enrollment) => (
-                          <li key={`${student.id}-${enrollment.educationClassId}`}>
+                        {classEnrollments.map(({ student, enrollment }) => (
+                          <li key={`${educationClass.id}-${student.id}`}>
                             <div>
-                              <strong>{enrollment.educationClassName}</strong>
-                              <span>{enrollment.educationUnitName}</span>
+                              <strong>{student.name}</strong>
+                              {student.registrationCode && (
+                                <span>Matrícula: {student.registrationCode}</span>
+                              )}
                               <span className="enrollments-date">
-                                Inscrito em {new Date(enrollment.createdAt).toLocaleString('pt-BR')}
+                                Vinculado em {new Date(enrollment.createdAt).toLocaleString('pt-BR')}
                               </span>
                             </div>
                             <button
                               type="button"
-                              onClick={() => handleUnenroll(student.id, enrollment.educationClassId)}
-                              disabled={studentFeedback?.status === 'loading'}
+                              onClick={() => handleUnenroll(educationClass.id, student.id)}
+                              disabled={classFeedback?.status === 'loading'}
                             >
                               Remover
                             </button>
@@ -162,50 +189,51 @@ function EducationEnrollmentsPage() {
                         ))}
                       </ul>
                     ) : (
-                      <p className="enrollments-empty">Nenhuma inscrição registrada para este aluno.</p>
+                      <p className="enrollments-empty">Nenhum aluno vinculado a esta disciplina.</p>
                     )}
                   </div>
 
                   <div className="enrollments-actions">
-                    <label htmlFor={`enrollments-select-${student.id}`}>Adicionar turma</label>
+                    <label htmlFor={`enrollments-select-class-${educationClass.id}`}>Adicionar aluno</label>
                     <div className="enrollments-row">
                       <select
-                        id={`enrollments-select-${student.id}`}
+                        id={`enrollments-select-class-${educationClass.id}`}
                         value={selection}
-                        onChange={(event) => handleSelectionChange(student.id, event.target.value)}
-                        disabled={availableClasses.length === 0 || studentFeedback?.status === 'loading'}
+                        onChange={(event) => handleSelectionChange(educationClass.id, event.target.value)}
+                        disabled={availableStudents.length === 0 || classFeedback?.status === 'loading'}
                       >
-                        <option value="">Selecione uma turma</option>
-                        {availableClasses.map((educationClass) => (
-                          <option key={educationClass.id} value={educationClass.id}>
-                            {educationClass.name} — {educationClass.educationUnitName}
+                        <option value="">Selecione um aluno</option>
+                        {availableStudents.map((student) => (
+                          <option key={student.id} value={student.id}>
+                            {student.name}
+                            {student.registrationCode ? ` — Matrícula ${student.registrationCode}` : ''}
                           </option>
                         ))}
                       </select>
                       <button
                         type="button"
-                        onClick={() => handleEnroll(student.id)}
-                        disabled={!selection || studentFeedback?.status === 'loading'}
+                        onClick={() => handleEnroll(educationClass.id)}
+                        disabled={!selection || classFeedback?.status === 'loading'}
                       >
-                        {studentFeedback?.status === 'loading' ? 'Processando…' : 'Adicionar'}
+                        {classFeedback?.status === 'loading' ? 'Processando…' : 'Adicionar'}
                       </button>
                     </div>
 
-                    {availableClasses.length === 0 && classes.length > 0 && (
+                    {availableStudents.length === 0 && students.length > 0 && (
                       <p className="enrollments-hint">
-                        Todas as turmas disponíveis já estão vinculadas a este aluno.
+                        Todos os alunos cadastrados já estão vinculados a esta disciplina.
                       </p>
                     )}
 
-                    {studentFeedback?.message && (
+                    {classFeedback?.message && (
                       <p
                         className={`enrollments-feedback ${
-                          studentFeedback?.status === 'error' ? 'enrollments-feedback-error' : ''
+                          classFeedback?.status === 'error' ? 'enrollments-feedback-error' : ''
                         } ${
-                          studentFeedback?.status === 'success' ? 'enrollments-feedback-success' : ''
+                          classFeedback?.status === 'success' ? 'enrollments-feedback-success' : ''
                         }`.trim()}
                       >
-                        {studentFeedback.message}
+                        {classFeedback.message}
                       </p>
                     )}
                   </div>

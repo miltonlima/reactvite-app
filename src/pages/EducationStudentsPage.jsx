@@ -1,5 +1,5 @@
 import './EducationStudentsPage.css'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useEducationStudents } from '../hooks/useEducationStudents'
 import { formatCpfForDisplay } from '../hooks/useRegistrationForm'
@@ -42,6 +42,7 @@ function EducationStudentsPage() {
     : (nextRegistrationCode ?? '')
 
   const [searchTerm, setSearchTerm] = useState('')
+  const [selectedStudent, setSelectedStudent] = useState(null)
 
   const filteredStudents = useMemo(() => {
     if (!Array.isArray(students) || students.length === 0) {
@@ -77,6 +78,81 @@ function EducationStudentsPage() {
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value)
   }
+
+  const formatDate = (value) => {
+    if (!value) {
+      return '—'
+    }
+
+    const parsed = new Date(value)
+    if (Number.isNaN(parsed.getTime())) {
+      return '—'
+    }
+
+    return parsed.toLocaleDateString('pt-BR')
+  }
+
+  const formatDateTime = (value) => {
+    if (!value) {
+      return '—'
+    }
+
+    const parsed = new Date(value)
+    if (Number.isNaN(parsed.getTime())) {
+      return '—'
+    }
+
+    return parsed.toLocaleString('pt-BR')
+  }
+
+  const formatCpf = (value) => {
+    if (!value) {
+      return '—'
+    }
+
+    return formatCpfForDisplay(value)
+  }
+
+  const openStudentModal = (student) => {
+    setSelectedStudent(student)
+  }
+
+  const closeStudentModal = () => {
+    setSelectedStudent(null)
+  }
+
+  const handleRowKeyDown = (event, student) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      openStudentModal(student)
+    }
+  }
+
+  const handleRowClick = (event, student) => {
+    if (event.target.closest('a, button')) {
+      return
+    }
+
+    openStudentModal(student)
+  }
+
+  useEffect(() => {
+    if (!selectedStudent) {
+      return
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        closeStudentModal()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [selectedStudent])
 
   const handleClearSearch = () => {
     setSearchTerm('')
@@ -279,94 +355,154 @@ function EducationStudentsPage() {
               {hasSearch ? 'Nenhum aluno encontrado para a busca informada.' : 'Nenhum aluno inscrito até o momento.'}
             </p>
           ) : (
-            <ul className="students-list">
-              {filteredStudents.map((item) => (
-                <li
-                  key={item.id}
-                  className={`students-item${editingId === item.id ? ' students-item-editing' : ''}`.trim()}
-                >
-                  <div className="students-item-header">
-                    <div>
-                      <strong>{item.name}</strong>
-                      {item.registrationCode && (
-                        <span className="students-chip">Matrícula: {item.registrationCode}</span>
-                      )}
-                    </div>
-                    <div className="students-item-actions">
-                      <Link to="/app/education-enrollments" className="students-manage-link">
-                        Gerenciar inscrições
-                      </Link>
-                      <button type="button" onClick={() => handleEditStudent(item)}>
-                        Editar
-                      </button>
-                      <button type="button" onClick={() => handleDeleteStudent(item.id)}>
-                        Remover aluno
-                      </button>
-                    </div>
-                  </div>
-                  <dl>
-                    {item.registrationCode && (
-                      <div>
-                        <dt>Matrícula</dt>
-                        <dd>{item.registrationCode}</dd>
-                      </div>
-                    )}
-                    {item.cpf && (
-                      <div>
-                        <dt>CPF</dt>
-                        <dd>{formatCpfForDisplay(item.cpf)}</dd>
-                      </div>
-                    )}
-                    {item.birthDate && (
-                      <div>
-                        <dt>Nascimento</dt>
-                        <dd>{new Date(item.birthDate).toLocaleDateString('pt-BR')}</dd>
-                      </div>
-                    )}
-                    {item.guardianName && (
-                      <div>
-                        <dt>Responsável</dt>
-                        <dd>{item.guardianName}</dd>
-                      </div>
-                    )}
-                    {item.guardianContact && (
-                      <div>
-                        <dt>Contato</dt>
-                        <dd>{item.guardianContact}</dd>
-                      </div>
-                    )}
-                    {item.notes && (
-                      <div>
-                        <dt>Observações</dt>
-                        <dd>{item.notes}</dd>
-                      </div>
-                    )}
-                    <div>
-                      <dt>Cadastrado em</dt>
-                      <dd>{new Date(item.createdAt).toLocaleString('pt-BR')}</dd>
-                    </div>
-                  </dl>
+            <div className="students-table-wrapper" role="region" aria-live="polite">
+              <table className="students-table">
+                <colgroup>
+                  <col className="students-col-name" />
+                  <col className="students-col-registration" />
+                  <col className="students-col-cpf" />
+                  <col className="students-col-birth" />
+                  <col className="students-col-created" />
+                  <col className="students-col-classes" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Matrícula</th>
+                    <th scope="col">CPF</th>
+                    <th scope="col">Nascimento</th>
+                    <th scope="col">Cadastrado em</th>
+                    <th scope="col">Turmas vinculadas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredStudents.map((student) => {
+                    const enrollmentNames = Array.isArray(student.enrollments)
+                      ? student.enrollments.map((enrollment) => enrollment.educationClassName).filter(Boolean)
+                      : []
 
-                  <div className="students-enrollment-summary">
-                    <strong>Turmas vinculadas</strong>
-                    {Array.isArray(item.enrollments) && item.enrollments.length > 0 ? (
-                      <ul className="students-enrollment-tags">
-                        {item.enrollments.map((enrollment) => (
-                          <li key={`${item.id}-${enrollment.educationClassId}`}>{enrollment.educationClassName}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="students-enrollment-empty">
-                        Nenhuma inscrição registrada. Use a tela Inscrições para adicionar vínculos.
-                      </p>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
+                    return (
+                      <tr
+                        key={student.id}
+                        onClick={(event) => handleRowClick(event, student)}
+                        onKeyDown={(event) => handleRowKeyDown(event, student)}
+                        role="button"
+                        tabIndex={0}
+                        className={editingId === student.id ? 'students-row-editing' : undefined}
+                      >
+                        <td data-title="Nome">{student.name}</td>
+                        <td data-title="Matrícula">{student.registrationCode ?? '—'}</td>
+                        <td data-title="CPF">{formatCpf(student.cpf)}</td>
+                        <td data-title="Nascimento">{formatDate(student.birthDate)}</td>
+                        <td data-title="Cadastrado em">{formatDateTime(student.createdAt)}</td>
+                        <td data-title="Turmas vinculadas" className="students-table-classes">
+                          {enrollmentNames.length > 0 ? enrollmentNames.join(', ') : 'Nenhuma turma'}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>
+
+      {selectedStudent && (
+        <div
+          className="students-modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="student-modal-title"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) {
+              closeStudentModal()
+            }
+          }}
+        >
+          <div className="students-modal">
+            <header className="students-modal-header">
+              <div>
+                <p className="students-modal-chip">Aluno</p>
+                <h3 id="student-modal-title">{selectedStudent.name}</h3>
+                {selectedStudent.registrationCode && (
+                  <p className="students-modal-subtitle">Matrícula {selectedStudent.registrationCode}</p>
+                )}
+              </div>
+              <button type="button" className="students-modal-close" onClick={closeStudentModal} aria-label="Fechar">
+                ×
+              </button>
+            </header>
+
+            <div className="students-modal-body">
+              <dl className="students-modal-details">
+                <div>
+                  <dt>CPF</dt>
+                  <dd>{formatCpf(selectedStudent.cpf)}</dd>
+                </div>
+                <div>
+                  <dt>Data de nascimento</dt>
+                  <dd>{formatDate(selectedStudent.birthDate)}</dd>
+                </div>
+                <div>
+                  <dt>Responsável</dt>
+                  <dd>{selectedStudent.guardianName || '—'}</dd>
+                </div>
+                <div>
+                  <dt>Contato do responsável</dt>
+                  <dd>{selectedStudent.guardianContact || '—'}</dd>
+                </div>
+                <div className="students-modal-full">
+                  <dt>Observações</dt>
+                  <dd>{selectedStudent.notes || '—'}</dd>
+                </div>
+                <div>
+                  <dt>Cadastrado em</dt>
+                  <dd>{formatDateTime(selectedStudent.createdAt)}</dd>
+                </div>
+              </dl>
+
+              <section className="students-modal-enrollments" aria-label="Turmas vinculadas">
+                <header>
+                  <h4>Turmas vinculadas</h4>
+                  <Link to="/app/education-enrollments" onClick={closeStudentModal}>
+                    Gerenciar inscrições
+                  </Link>
+                </header>
+                {Array.isArray(selectedStudent.enrollments) && selectedStudent.enrollments.length > 0 ? (
+                  <ul>
+                    {selectedStudent.enrollments.map((enrollment) => (
+                      <li key={`${selectedStudent.id}-${enrollment.educationClassId}`}>
+                        <strong>{enrollment.educationClassName}</strong>
+                        <span>{enrollment.educationUnitName}</span>
+                        <span>Desde {formatDate(enrollment.createdAt)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>Nenhuma turma vinculada ainda.</p>
+                )}
+              </section>
+            </div>
+
+            <footer className="students-modal-actions">
+              <button type="button" onClick={() => { handleEditStudent(selectedStudent); closeStudentModal() }}>
+                Editar cadastro
+              </button>
+              <button
+                type="button"
+                className="students-modal-remove"
+                onClick={async () => {
+                  await handleDeleteStudent(selectedStudent.id)
+                  closeStudentModal()
+                }}
+              >
+                Remover aluno
+              </button>
+            </footer>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 import { useEducationStudents } from '../hooks/useEducationStudents'
 import { formatCpfForDisplay } from '../hooks/useRegistrationForm'
 
+const PAGE_SIZE_OPTIONS = [10, 20, 50]
+
 function EducationStudentsPage() {
   const {
     students,
@@ -223,8 +225,46 @@ function EducationStudentsPage() {
   const totalStudents = students.length
   const resultsCount = filteredStudents.length
 
+  const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTIONS[0])
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const totalPages = useMemo(() => Math.max(1, Math.ceil(resultsCount / pageSize)), [resultsCount, pageSize])
+  const effectivePage = currentPage > totalPages ? totalPages : currentPage
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages)
+    }
+  }, [currentPage, totalPages])
+
+  const paginatedStudents = useMemo(() => {
+    if (resultsCount === 0) {
+      return []
+    }
+
+    const startIndex = (effectivePage - 1) * pageSize
+    return filteredStudents.slice(startIndex, startIndex + pageSize)
+  }, [filteredStudents, effectivePage, pageSize, resultsCount])
+
+  const pageRangeStart = resultsCount === 0 ? 0 : (effectivePage - 1) * pageSize + 1
+  const pageRangeEnd = resultsCount === 0 ? 0 : Math.min(resultsCount, effectivePage * pageSize)
+
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value)
+    setCurrentPage(1)
+  }
+
+  const handlePageSizeChange = (event) => {
+    setPageSize(Number(event.target.value))
+    setCurrentPage(1)
+  }
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(1, prev - 1))
+  }
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
   }
 
   const formatDate = (value) => {
@@ -278,6 +318,7 @@ function EducationStudentsPage() {
 
   const handleClearSearch = () => {
     setSearchTerm('')
+    setCurrentPage(1)
   }
 
   return (
@@ -441,6 +482,16 @@ function EducationStudentsPage() {
                 </button>
               )}
             </div>
+            <div className="students-page-size">
+              <label htmlFor="students-page-size">Alunos por página</label>
+              <select id="students-page-size" value={pageSize} onChange={handlePageSizeChange}>
+                {PAGE_SIZE_OPTIONS.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {status === 'error' && (
@@ -456,54 +507,74 @@ function EducationStudentsPage() {
               {hasSearch ? 'Nenhum aluno encontrado para a busca informada.' : 'Nenhum aluno inscrito até o momento.'}
             </p>
           ) : (
-            <div className="students-table-wrapper" role="region" aria-live="polite">
-              <table className="students-table">
-                <colgroup>
-                  <col className="students-col-name" />
-                  <col className="students-col-registration" />
-                  <col className="students-col-cpf" />
-                  <col className="students-col-birth" />
-                  <col className="students-col-created" />
-                  <col className="students-col-classes" />
-                </colgroup>
-                <thead>
-                  <tr>
-                    <th scope="col">Nome</th>
-                    <th scope="col">Matrícula</th>
-                    <th scope="col">CPF</th>
-                    <th scope="col">Nascimento</th>
-                    <th scope="col">Cadastrado em</th>
-                    <th scope="col">Turmas vinculadas</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredStudents.map((student) => {
-                    const enrollmentNames = Array.isArray(student.enrollments)
-                      ? student.enrollments.map((enrollment) => enrollment.educationClassName).filter(Boolean)
-                      : []
+            <div className="students-table-section">
+              <div className="students-table-wrapper" role="region" aria-live="polite">
+                <table className="students-table">
+                  <colgroup>
+                    <col className="students-col-name" />
+                    <col className="students-col-registration" />
+                    <col className="students-col-cpf" />
+                    <col className="students-col-birth" />
+                    <col className="students-col-created" />
+                    <col className="students-col-classes" />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th scope="col">Nome</th>
+                      <th scope="col">Matrícula</th>
+                      <th scope="col">CPF</th>
+                      <th scope="col">Nascimento</th>
+                      <th scope="col">Cadastrado em</th>
+                      <th scope="col">Turmas vinculadas</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedStudents.map((student) => {
+                      const enrollmentNames = Array.isArray(student.enrollments)
+                        ? student.enrollments.map((enrollment) => enrollment.educationClassName).filter(Boolean)
+                        : []
 
-                    return (
-                      <tr
-                        key={student.id}
-                        onClick={(event) => handleRowClick(event, student)}
-                        onKeyDown={(event) => handleRowKeyDown(event, student)}
-                        role="button"
-                        tabIndex={0}
-                        className={isModalOpen && selectedStudentId === student.id ? 'students-row-editing' : undefined}
-                      >
-                        <td data-title="Nome">{student.name}</td>
-                        <td data-title="Matrícula">{student.registrationCode ?? '—'}</td>
-                        <td data-title="CPF">{formatCpf(student.cpf)}</td>
-                        <td data-title="Nascimento">{formatDate(student.birthDate)}</td>
-                        <td data-title="Cadastrado em">{formatDateTime(student.createdAt)}</td>
-                        <td data-title="Turmas vinculadas" className="students-table-classes">
-                          {enrollmentNames.length > 0 ? enrollmentNames.join(', ') : 'Nenhuma turma'}
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
+                      return (
+                        <tr
+                          key={student.id}
+                          onClick={(event) => handleRowClick(event, student)}
+                          onKeyDown={(event) => handleRowKeyDown(event, student)}
+                          role="button"
+                          tabIndex={0}
+                          className={isModalOpen && selectedStudentId === student.id ? 'students-row-editing' : undefined}
+                        >
+                          <td data-title="Nome">{student.name}</td>
+                          <td data-title="Matrícula">{student.registrationCode ?? '—'}</td>
+                          <td data-title="CPF">{formatCpf(student.cpf)}</td>
+                          <td data-title="Nascimento">{formatDate(student.birthDate)}</td>
+                          <td data-title="Cadastrado em">{formatDateTime(student.createdAt)}</td>
+                          <td data-title="Turmas vinculadas" className="students-table-classes">
+                            {enrollmentNames.length > 0 ? enrollmentNames.join(', ') : 'Nenhuma turma'}
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <div className="students-pagination" role="navigation" aria-label="Paginação de alunos">
+                <div className="students-pagination-info">
+                  {resultsCount === 0
+                    ? 'Nenhum aluno encontrado'
+                    : `Mostrando ${pageRangeStart}-${pageRangeEnd} de ${resultsCount} alunos`}
+                </div>
+                <div className="students-pagination-controls">
+                  <button type="button" onClick={handlePreviousPage} disabled={effectivePage <= 1}>
+                    Anterior
+                  </button>
+                  <span className="students-pagination-status">
+                    Página {resultsCount === 0 ? 0 : effectivePage} de {resultsCount === 0 ? 0 : totalPages}
+                  </span>
+                  <button type="button" onClick={handleNextPage} disabled={effectivePage >= totalPages || resultsCount === 0}>
+                    Próxima
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>

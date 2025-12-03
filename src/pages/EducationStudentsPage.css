@@ -399,17 +399,19 @@
 .students-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(2, 6, 23, 0.68);
-  z-index: 70;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: 2rem;
+  background: rgba(2, 6, 23, 0.68);
+  z-index: 70;
+  overflow-y: auto;
 }
 
 .students-modal {
-  width: min(720px, 100%);
-  max-height: calc(100vh - 3rem);
+  position: relative;
+  width: min(840px, 100%);
+  max-height: calc(100vh - 4rem);
   overflow-y: auto;
   background: linear-gradient(180deg, rgba(10, 18, 34, 0.98), rgba(4, 9, 18, 0.98));
   border: 1px solid rgba(148, 163, 255, 0.25);
@@ -568,6 +570,8 @@
 @media (max-width: 640px) {
   .students-modal {
     padding: 1.25rem;
+    width: 100%;
+    max-height: calc(100vh - 2rem);
   }
 
   .students-modal-actions {

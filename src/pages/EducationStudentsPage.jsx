@@ -77,15 +77,12 @@ function EducationStudentsPage() {
     [selectedStudent],
   )
 
-  const openStudentModal = useCallback(
-    (student) => {
-      setSelectedStudentId(student.id)
-      setIsModalOpen(true)
-      setModalStatus('idle')
-      setModalMessage('')
-    },
-    [],
-  )
+  const openStudentModal = useCallback((student) => {
+    setSelectedStudentId(student.id)
+    setIsModalOpen(true)
+    setModalStatus('idle')
+    setModalMessage('')
+  }, [])
 
   const closeStudentModal = useCallback(() => {
     setIsModalOpen(false)

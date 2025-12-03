@@ -1,5 +1,5 @@
 import './EducationStudentsPage.css'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useEducationStudents } from '../hooks/useEducationStudents'
 import { formatCpfForDisplay } from '../hooks/useRegistrationForm'
@@ -14,35 +14,186 @@ function EducationStudentsPage() {
     formMessage,
     handleFormChange,
     saveStudent,
-    startEditing,
-    cancelEdit,
-    editingId,
-    isEditing,
     resetForm,
     deleteStudent,
     refresh,
     nextRegistrationCode,
+    updateStudent,
   } = useEducationStudents()
+
+  const [searchTerm, setSearchTerm] = useState('')
+  const emptyModalState = useMemo(
+    () => ({
+      name: '',
+      registrationCode: '',
+      cpf: '',
+      birthDate: '',
+      guardianName: '',
+      guardianContact: '',
+      notes: '',
+    }),
+    [],
+  )
+  const [selectedStudentId, setSelectedStudentId] = useState(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalState, setModalState] = useState(() => ({ ...emptyModalState }))
+  const [modalStatus, setModalStatus] = useState('idle')
+  const [modalMessage, setModalMessage] = useState('')
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     await saveStudent()
   }
 
-  const handleDeleteStudent = async (studentId) => {
-    await deleteStudent(studentId)
+  const handleResetForm = () => {
+    resetForm()
   }
 
-  const handleEditStudent = (student) => {
-    startEditing(student)
+  const registrationCodeValue = nextRegistrationCode ?? ''
+
+  const mapStudentToModalState = useCallback(
+    (student) => ({
+      name: student?.name ?? '',
+      registrationCode: student?.registrationCode ?? '',
+      cpf: formatCpfForDisplay(student?.cpf ?? ''),
+      birthDate: student?.birthDate ?? '',
+      guardianName: student?.guardianName ?? '',
+      guardianContact: student?.guardianContact ?? '',
+      notes: student?.notes ?? '',
+    }),
+    [],
+  )
+
+  const selectedStudent = useMemo(() => {
+    if (selectedStudentId === null) {
+      return null
+    }
+
+    return students.find((student) => student.id === selectedStudentId) ?? null
+  }, [selectedStudentId, students])
+
+  const selectedStudentEnrollments = useMemo(
+    () => (Array.isArray(selectedStudent?.enrollments) ? selectedStudent.enrollments : []),
+    [selectedStudent],
+  )
+
+  const openStudentModal = useCallback(
+    (student) => {
+      setSelectedStudentId(student.id)
+      setIsModalOpen(true)
+      setModalStatus('idle')
+      setModalMessage('')
+    },
+    [],
+  )
+
+  const closeStudentModal = useCallback(() => {
+    setIsModalOpen(false)
+    setSelectedStudentId(null)
+    setModalStatus('idle')
+    setModalMessage('')
+    setModalState(() => ({ ...emptyModalState }))
+  }, [emptyModalState])
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      return
+    }
+
+    if (selectedStudent) {
+      setModalState(() => mapStudentToModalState(selectedStudent))
+      return
+    }
+
+    closeStudentModal()
+  }, [isModalOpen, selectedStudent, mapStudentToModalState, closeStudentModal])
+
+  useEffect(() => {
+    if (!isModalOpen) {
+      return undefined
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        closeStudentModal()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isModalOpen, closeStudentModal])
+
+  const handleModalFieldChange = (event) => {
+    const { name, value } = event.target
+
+    if (name === 'registrationCode') {
+      return
+    }
+
+    if (name === 'cpf') {
+      setModalState((prev) => ({
+        ...prev,
+        cpf: formatCpfForDisplay(value),
+      }))
+      return
+    }
+
+    setModalState((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
   }
 
-  const registrationCodeValue = isEditing
-    ? (formState.registrationCode ?? '')
-    : (nextRegistrationCode ?? '')
+  const handleModalReset = () => {
+    if (!selectedStudent) {
+      setModalState(() => ({ ...emptyModalState }))
+      return
+    }
 
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedStudent, setSelectedStudent] = useState(null)
+    setModalState(() => mapStudentToModalState(selectedStudent))
+    setModalStatus('idle')
+    setModalMessage('')
+  }
+
+  const handleModalSubmit = async (event) => {
+    event.preventDefault()
+
+    if (!selectedStudent) {
+      return
+    }
+
+    setModalStatus('submitting')
+    setModalMessage('')
+
+    try {
+      const updated = await updateStudent(selectedStudent.id, modalState)
+      setModalStatus('success')
+      setModalMessage('Dados do aluno atualizados com sucesso.')
+      setModalState(mapStudentToModalState(updated))
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Não foi possível atualizar os dados do aluno.'
+      setModalStatus('error')
+      setModalMessage(message)
+    }
+  }
+
+  const handleModalDelete = async () => {
+    if (!selectedStudent) {
+      return
+    }
+
+    const confirmed = window.confirm('Tem certeza de que deseja remover este aluno? Essa ação não pode ser desfeita.')
+    if (!confirmed) {
+      return
+    }
+
+    setModalStatus('submitting')
+    setModalMessage('')
+    await deleteStudent(selectedStudent.id)
+    closeStudentModal()
+  }
 
   const filteredStudents = useMemo(() => {
     if (!Array.isArray(students) || students.length === 0) {
@@ -113,14 +264,6 @@ function EducationStudentsPage() {
     return formatCpfForDisplay(value)
   }
 
-  const openStudentModal = (student) => {
-    setSelectedStudent(student)
-  }
-
-  const closeStudentModal = () => {
-    setSelectedStudent(null)
-  }
-
   const handleRowKeyDown = (event, student) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
@@ -136,24 +279,6 @@ function EducationStudentsPage() {
     openStudentModal(student)
   }
 
-  useEffect(() => {
-    if (!selectedStudent) {
-      return
-    }
-
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        closeStudentModal()
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [selectedStudent])
-
   const handleClearSearch = () => {
     setSearchTerm('')
   }
@@ -165,8 +290,8 @@ function EducationStudentsPage() {
           <p className="students-kicker">Rede de ensino</p>
           <h1 id="students-title">Alunos</h1>
           <p>
-            Cadastre alunos de forma independente. As inscrições em turmas agora ficam na tela
-            <strong> Inscrições</strong>.
+            Cadastre novos alunos e clique na lista para editar em uma janela modal centralizada. As inscrições em
+            turmas ficam na tela<strong> Inscrições</strong>.
           </p>
         </div>
         <button type="button" className="students-refresh" onClick={refresh} disabled={status === 'loading'}>
@@ -177,12 +302,8 @@ function EducationStudentsPage() {
       <div className="students-layout">
         <form className="students-form" onSubmit={handleSubmit}>
           <div className="students-form-header">
-            <h2>{isEditing ? 'Editar aluno' : 'Novo aluno'}</h2>
-            <p>
-              {isEditing
-                ? 'Atualize os dados do aluno selecionado e salve as alterações.'
-                : 'Preencha as informações básicas; depois acesse Inscrições para vincular turmas.'}
-            </p>
+            <h2>Novo aluno</h2>
+            <p>Preencha as informações básicas; depois acesse Inscrições para vincular turmas.</p>
           </div>
 
           {formMessage && (
@@ -196,9 +317,7 @@ function EducationStudentsPage() {
 
           <div className="students-grid">
             <p className="students-hint">
-              {isEditing
-                ? 'A matrícula e as inscrições existentes do aluno serão preservadas.'
-                : 'A matrícula é gerada automaticamente como um número sequencial ao cadastrar o aluno.'}
+              A matrícula é gerada automaticamente como um número sequencial ao cadastrar o aluno.
             </p>
 
             <label className="students-field">
@@ -282,38 +401,23 @@ function EducationStudentsPage() {
 
           <div className="students-actions">
             <button type="submit" disabled={formStatus === 'submitting'}>
-              {formStatus === 'submitting'
-                ? 'Salvando…'
-                : isEditing
-                  ? 'Salvar alterações'
-                  : 'Cadastrar aluno'}
+              {formStatus === 'submitting' ? 'Salvando…' : 'Cadastrar aluno'}
             </button>
-            {isEditing ? (
-              <button
-                type="button"
-                className="students-reset"
-                onClick={cancelEdit}
-                disabled={formStatus === 'submitting'}
-              >
-                Cancelar edição
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="students-reset"
-                onClick={resetForm}
-                disabled={formStatus === 'submitting'}
-              >
-                Limpar
-              </button>
-            )}
+            <button
+              type="button"
+              className="students-reset"
+              onClick={handleResetForm}
+              disabled={formStatus === 'submitting'}
+            >
+              Limpar
+            </button>
           </div>
         </form>
 
         <div className="students-list-card">
           <div className="students-list-header">
             <h2>Alunos cadastrados</h2>
-            <p>Acompanhe os dados principais. Para gerenciar vínculos, utilize a tela Inscrições.</p>
+            <p>Clique em um aluno para abrir a edição em uma janela modal.</p>
           </div>
 
           <div className="students-list-controls" role="search">
@@ -388,7 +492,7 @@ function EducationStudentsPage() {
                         onKeyDown={(event) => handleRowKeyDown(event, student)}
                         role="button"
                         tabIndex={0}
-                        className={editingId === student.id ? 'students-row-editing' : undefined}
+                        className={isModalOpen && selectedStudentId === student.id ? 'students-row-editing' : undefined}
                       >
                         <td data-title="Nome">{student.name}</td>
                         <td data-title="Matrícula">{student.registrationCode ?? '—'}</td>
@@ -408,7 +512,7 @@ function EducationStudentsPage() {
         </div>
       </div>
 
-      {selectedStudent && (
+      {isModalOpen && selectedStudent && (
         <div
           className="students-modal-overlay"
           role="dialog"
@@ -420,7 +524,7 @@ function EducationStudentsPage() {
             }
           }}
         >
-          <div className="students-modal">
+          <form className="students-modal" onSubmit={handleModalSubmit}>
             <header className="students-modal-header">
               <div>
                 <p className="students-modal-chip">Aluno</p>
@@ -429,49 +533,106 @@ function EducationStudentsPage() {
                   <p className="students-modal-subtitle">Matrícula {selectedStudent.registrationCode}</p>
                 )}
               </div>
-              <button type="button" className="students-modal-close" onClick={closeStudentModal} aria-label="Fechar">
+              <button type="button" className="students-modal-close" aria-label="Fechar" onClick={closeStudentModal}>
                 ×
               </button>
             </header>
 
+            {modalMessage && (
+              <div
+                role="status"
+                className={`students-alert ${modalStatus === 'success' ? 'students-alert-success' : ''} ${modalStatus === 'error' ? 'students-alert-error' : ''}`.trim()}
+              >
+                {modalMessage}
+              </div>
+            )}
+
             <div className="students-modal-body">
-              <dl className="students-modal-details">
-                <div>
-                  <dt>CPF</dt>
-                  <dd>{formatCpf(selectedStudent.cpf)}</dd>
-                </div>
-                <div>
-                  <dt>Data de nascimento</dt>
-                  <dd>{formatDate(selectedStudent.birthDate)}</dd>
-                </div>
-                <div>
-                  <dt>Responsável</dt>
-                  <dd>{selectedStudent.guardianName || '—'}</dd>
-                </div>
-                <div>
-                  <dt>Contato do responsável</dt>
-                  <dd>{selectedStudent.guardianContact || '—'}</dd>
-                </div>
-                <div className="students-modal-full">
-                  <dt>Observações</dt>
-                  <dd>{selectedStudent.notes || '—'}</dd>
-                </div>
-                <div>
-                  <dt>Cadastrado em</dt>
-                  <dd>{formatDateTime(selectedStudent.createdAt)}</dd>
-                </div>
-              </dl>
+              <div className="students-grid students-modal-form">
+                <label className="students-field">
+                  <span>Matrícula</span>
+                  <input type="text" name="registrationCode" value={modalState.registrationCode} readOnly />
+                </label>
+
+                <label className="students-field students-field-full">
+                  <span>Nome do aluno *</span>
+                  <input
+                    type="text"
+                    name="name"
+                    value={modalState.name}
+                    onChange={handleModalFieldChange}
+                    placeholder="Nome completo"
+                    required
+                  />
+                </label>
+
+                <label className="students-field">
+                  <span>CPF</span>
+                  <input
+                    type="text"
+                    name="cpf"
+                    value={modalState.cpf}
+                    onChange={handleModalFieldChange}
+                    placeholder="000.000.000-00"
+                    inputMode="numeric"
+                    maxLength={14}
+                  />
+                </label>
+
+                <label className="students-field">
+                  <span>Data de nascimento</span>
+                  <input
+                    type="date"
+                    name="birthDate"
+                    value={modalState.birthDate}
+                    onChange={handleModalFieldChange}
+                  />
+                </label>
+
+                <label className="students-field">
+                  <span>Responsável</span>
+                  <input
+                    type="text"
+                    name="guardianName"
+                    value={modalState.guardianName}
+                    onChange={handleModalFieldChange}
+                    placeholder="Nome do responsável"
+                  />
+                </label>
+
+                <label className="students-field">
+                  <span>Contato do responsável</span>
+                  <input
+                    type="text"
+                    name="guardianContact"
+                    value={modalState.guardianContact}
+                    onChange={handleModalFieldChange}
+                    placeholder="Telefone, email, etc."
+                  />
+                </label>
+
+                <label className="students-field students-field-full">
+                  <span>Observações</span>
+                  <textarea
+                    name="notes"
+                    value={modalState.notes}
+                    onChange={handleModalFieldChange}
+                    placeholder="Observações gerais, restrições alimentares, necessidades especiais, etc."
+                    rows={4}
+                  />
+                </label>
+              </div>
 
               <section className="students-modal-enrollments" aria-label="Turmas vinculadas">
                 <header>
                   <h4>Turmas vinculadas</h4>
-                  <Link to="/app/education-enrollments" onClick={closeStudentModal}>
+                  <Link to="/app/education-enrollments" state={{ studentId: selectedStudent.id }} onClick={closeStudentModal}>
                     Gerenciar inscrições
                   </Link>
                 </header>
-                {Array.isArray(selectedStudent.enrollments) && selectedStudent.enrollments.length > 0 ? (
+                {selectedStudentEnrollments.length > 0 ? (
                   <ul>
-                    {selectedStudent.enrollments.map((enrollment) => (
+                    {selectedStudentEnrollments.map((enrollment) => (
                       <li key={`${selectedStudent.id}-${enrollment.educationClassId}`}>
                         <strong>{enrollment.educationClassName}</strong>
                         <span>{enrollment.educationUnitName}</span>
@@ -480,29 +641,36 @@ function EducationStudentsPage() {
                     ))}
                   </ul>
                 ) : (
-                  <p>Nenhuma turma vinculada ainda.</p>
+                  <p className="students-placeholder">Nenhuma turma vinculada ainda.</p>
                 )}
               </section>
             </div>
 
             <footer className="students-modal-actions">
-              <button type="button" onClick={() => { handleEditStudent(selectedStudent); closeStudentModal() }}>
-                Editar cadastro
+              <button type="submit" disabled={modalStatus === 'submitting'}>
+                {modalStatus === 'submitting' ? 'Salvando…' : 'Salvar alterações'}
               </button>
               <button
                 type="button"
-                className="students-modal-remove"
-                onClick={async () => {
-                  await handleDeleteStudent(selectedStudent.id)
-                  closeStudentModal()
-                }}
+                className="students-reset"
+                onClick={handleModalReset}
+                disabled={modalStatus === 'submitting'}
+              >
+                Desfazer alterações
+              </button>
+              <button
+                type="button"
+                className="students-delete"
+                onClick={handleModalDelete}
+                disabled={modalStatus === 'submitting'}
               >
                 Remover aluno
               </button>
             </footer>
-          </div>
+          </form>
         </div>
       )}
+
     </section>
   )
 }

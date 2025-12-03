@@ -16,6 +16,15 @@ const initialFormState = {
 
 const sanitizeCpf = (value) => value.replace(/\D/g, '').slice(0, 11)
 
+const createStudentPayload = (values) => ({
+  name: (values?.name ?? '').trim(),
+  cpf: sanitizeCpf(values?.cpf ?? '') || null,
+  birthDate: values?.birthDate || null,
+  guardianName: (values?.guardianName ?? '').trim() || null,
+  guardianContact: (values?.guardianContact ?? '').trim() || null,
+  notes: (values?.notes ?? '').trim() || null,
+})
+
 export function useEducationStudents() {
   const { token } = useAuth()
   const [classes, setClasses] = useState([])
@@ -119,20 +128,13 @@ export function useEducationStudents() {
     if (!authorizedHeaders) {
       setFormStatus('error')
       setFormMessage('Sua sessão expirou. Faça login novamente para continuar.')
-      return
+      return null
     }
 
     setFormStatus('submitting')
     setFormMessage('')
 
-    const payload = {
-      name: formState.name.trim(),
-      cpf: sanitizeCpf(formState.cpf) || null,
-      birthDate: formState.birthDate || null,
-      guardianName: formState.guardianName.trim() || null,
-      guardianContact: formState.guardianContact.trim() || null,
-      notes: formState.notes.trim() || null,
-    }
+    const payload = createStudentPayload(formState)
 
     const isEditing = editingId !== null
     const url = isEditing
@@ -172,11 +174,28 @@ export function useEducationStudents() {
           ? 'Dados do aluno atualizados com sucesso.'
           : 'Aluno cadastrado com sucesso. Acesse a tela Inscrições para vincular turmas.'
       )
-      setFormState(initialFormState)
-      setEditingId(null)
+
+      if (isEditing) {
+        setFormState({
+          name: saved?.name ?? '',
+          registrationCode: saved?.registrationCode ?? '',
+          cpf: formatCpfForDisplay(saved?.cpf ?? ''),
+          birthDate: saved?.birthDate ?? '',
+          guardianName: saved?.guardianName ?? '',
+          guardianContact: saved?.guardianContact ?? '',
+          notes: saved?.notes ?? '',
+        })
+        setEditingId(saved?.id ?? null)
+      } else {
+        setFormState(initialFormState)
+        setEditingId(null)
+      }
+
+      return saved
     } catch (error) {
       setFormStatus('error')
       setFormMessage(error instanceof Error ? error.message : failureMessage)
+      return null
     }
   }, [authorizedHeaders, editingId, formState])
 
@@ -250,6 +269,40 @@ export function useEducationStudents() {
       return updated
     },
     [authorizedHeaders]
+  )
+
+  const updateStudent = useCallback(
+    async (id, values) => {
+      if (!authorizedHeaders) {
+        throw new Error('Sua sessão expirou. Faça login novamente.')
+      }
+
+      const payload = createStudentPayload(values)
+      const failureMessage = 'Não foi possível atualizar os dados do aluno.'
+
+      const response = await fetch(`${API_BASE_URL}/api/education-students/${id}`, {
+        method: 'PUT',
+        headers: authorizedHeaders,
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) {
+        let message = failureMessage
+        const contentType = response.headers.get('content-type')
+        if (contentType && contentType.includes('application/json')) {
+          const body = await response.json()
+          if (body?.message) {
+            message = body.message
+          }
+        }
+        throw new Error(message)
+      }
+
+      const updated = await response.json()
+      setStudents((prev) => prev.map((student) => (student.id === updated.id ? updated : student)))
+      return updated
+    },
+    [authorizedHeaders],
   )
 
   const startEditing = useCallback((student) => {
@@ -338,5 +391,6 @@ export function useEducationStudents() {
     deleteStudent,
     refresh,
     nextRegistrationCode,
+    updateStudent,
   }
 }

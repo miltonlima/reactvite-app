@@ -1,4 +1,5 @@
 import './EducationStudentsPage.css'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useEducationStudents } from '../hooks/useEducationStudents'
 import { formatCpfForDisplay } from '../hooks/useRegistrationForm'
@@ -39,6 +40,47 @@ function EducationStudentsPage() {
   const registrationCodeValue = isEditing
     ? (formState.registrationCode ?? '')
     : (nextRegistrationCode ?? '')
+
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const filteredStudents = useMemo(() => {
+    if (!Array.isArray(students) || students.length === 0) {
+      return []
+    }
+
+    const query = searchTerm.trim().toLowerCase()
+    if (!query) {
+      return students
+    }
+
+    const numericQuery = query.replace(/[^0-9]/g, '')
+
+    return students.filter((student) => {
+      const nameMatch = (student.name ?? '').toLowerCase().includes(query)
+      const registration = (student.registrationCode ?? '').toLowerCase()
+      const registrationMatch = registration.includes(query)
+
+      const cpfDigits = (student.cpf ?? '').replace(/[^0-9]/g, '')
+      const registrationDigits = registration.replace(/[^0-9]/g, '')
+
+      const cpfMatch = numericQuery ? cpfDigits.includes(numericQuery) : false
+      const registrationNumericMatch = numericQuery ? registrationDigits.includes(numericQuery) : false
+
+      return nameMatch || registrationMatch || cpfMatch || registrationNumericMatch
+    })
+  }, [searchTerm, students])
+
+  const hasSearch = searchTerm.trim().length > 0
+  const totalStudents = students.length
+  const resultsCount = filteredStudents.length
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value)
+  }
+
+  const handleClearSearch = () => {
+    setSearchTerm('')
+  }
 
   return (
     <section className="students-page" aria-labelledby="students-title">
@@ -198,6 +240,32 @@ function EducationStudentsPage() {
             <p>Acompanhe os dados principais. Para gerenciar vínculos, utilize a tela Inscrições.</p>
           </div>
 
+          <div className="students-list-controls" role="search">
+            <div className="students-search">
+              <label htmlFor="students-search">Buscar aluno</label>
+              <input
+                id="students-search"
+                type="search"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                placeholder="Digite nome, CPF ou matrícula"
+                autoComplete="off"
+              />
+            </div>
+            <div className="students-search-meta">
+              <span>
+                {resultsCount === totalStudents
+                  ? `${resultsCount} ${resultsCount === 1 ? 'aluno' : 'alunos'} cadastrados`
+                  : `${resultsCount} de ${totalStudents} alunos`}
+              </span>
+              {hasSearch && (
+                <button type="button" className="students-clear-search" onClick={handleClearSearch}>
+                  Limpar busca
+                </button>
+              )}
+            </div>
+          </div>
+
           {status === 'error' && (
             <div className="students-alert students-alert-error" role="alert">
               {errorMessage || 'Não foi possível carregar os alunos inscritos.'}
@@ -206,11 +274,13 @@ function EducationStudentsPage() {
 
           {status === 'loading' && !students.length ? (
             <p className="students-placeholder">Carregando alunos…</p>
-          ) : students.length === 0 ? (
-            <p className="students-placeholder">Nenhum aluno inscrito até o momento.</p>
+          ) : resultsCount === 0 ? (
+            <p className="students-placeholder">
+              {hasSearch ? 'Nenhum aluno encontrado para a busca informada.' : 'Nenhum aluno inscrito até o momento.'}
+            </p>
           ) : (
             <ul className="students-list">
-              {students.map((item) => (
+              {filteredStudents.map((item) => (
                 <li
                   key={item.id}
                   className={`students-item${editingId === item.id ? ' students-item-editing' : ''}`.trim()}

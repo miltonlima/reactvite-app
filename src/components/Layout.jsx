@@ -10,7 +10,7 @@ const Layout = () => {
     <div className="layout-container">
       <header className="layout-header">
         <div className="layout-logo">
-          <Link to="dashboard">App</Link>
+          <Link to="dashboard">RVApp</Link>
         </div>
         <nav className="layout-nav">
           <Link to="dashboard">Painel</Link>          

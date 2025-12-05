@@ -5,6 +5,7 @@ import { useEducationStudents } from '../hooks/useEducationStudents'
 import { formatCpfForDisplay } from '../hooks/useRegistrationForm'
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50]
+const MODAL_ENROLLMENTS_PAGE_SIZE = 5
 
 function EducationStudentsPage() {
   const {
@@ -41,6 +42,7 @@ function EducationStudentsPage() {
   const [modalState, setModalState] = useState(() => ({ ...emptyModalState }))
   const [modalStatus, setModalStatus] = useState('idle')
   const [modalMessage, setModalMessage] = useState('')
+  const [modalEnrollmentsPage, setModalEnrollmentsPage] = useState(1)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -79,11 +81,52 @@ function EducationStudentsPage() {
     [selectedStudent],
   )
 
+  const modalEnrollmentsCount = selectedStudentEnrollments.length
+
+  const totalModalEnrollmentsPages = useMemo(() => {
+    if (!modalEnrollmentsCount) {
+      return 1
+    }
+
+    return Math.max(1, Math.ceil(modalEnrollmentsCount / MODAL_ENROLLMENTS_PAGE_SIZE))
+  }, [modalEnrollmentsCount])
+
+  const modalEffectiveEnrollmentsPage = useMemo(() => {
+    if (!modalEnrollmentsCount) {
+      return 1
+    }
+
+    return Math.min(modalEnrollmentsPage, totalModalEnrollmentsPages)
+  }, [modalEnrollmentsPage, totalModalEnrollmentsPages, modalEnrollmentsCount])
+
+  useEffect(() => {
+    if (modalEnrollmentsPage > totalModalEnrollmentsPages) {
+      setModalEnrollmentsPage(totalModalEnrollmentsPages)
+    }
+  }, [modalEnrollmentsPage, totalModalEnrollmentsPages])
+
+  const paginatedEnrollments = useMemo(() => {
+    if (!modalEnrollmentsCount) {
+      return []
+    }
+
+    const startIndex = (modalEffectiveEnrollmentsPage - 1) * MODAL_ENROLLMENTS_PAGE_SIZE
+    return selectedStudentEnrollments.slice(startIndex, startIndex + MODAL_ENROLLMENTS_PAGE_SIZE)
+  }, [selectedStudentEnrollments, modalEffectiveEnrollmentsPage, modalEnrollmentsCount])
+
+  const modalEnrollmentsRangeStart = modalEnrollmentsCount
+    ? (modalEffectiveEnrollmentsPage - 1) * MODAL_ENROLLMENTS_PAGE_SIZE + 1
+    : 0
+  const modalEnrollmentsRangeEnd = modalEnrollmentsCount
+    ? Math.min(modalEnrollmentsCount, modalEffectiveEnrollmentsPage * MODAL_ENROLLMENTS_PAGE_SIZE)
+    : 0
+
   const openStudentModal = useCallback((student) => {
     setSelectedStudentId(student.id)
     setIsModalOpen(true)
     setModalStatus('idle')
     setModalMessage('')
+    setModalEnrollmentsPage(1)
   }, [])
 
   const closeStudentModal = useCallback(() => {
@@ -92,6 +135,7 @@ function EducationStudentsPage() {
     setModalStatus('idle')
     setModalMessage('')
     setModalState(() => ({ ...emptyModalState }))
+    setModalEnrollmentsPage(1)
   }, [emptyModalState])
 
   useEffect(() => {
@@ -265,6 +309,14 @@ function EducationStudentsPage() {
 
   const handleNextPage = () => {
     setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+  }
+
+  const handleModalEnrollmentsPrev = () => {
+    setModalEnrollmentsPage((prev) => Math.max(1, prev - 1))
+  }
+
+  const handleModalEnrollmentsNext = () => {
+    setModalEnrollmentsPage((prev) => Math.min(totalModalEnrollmentsPages, prev + 1))
   }
 
   const formatDate = (value) => {
@@ -494,6 +546,25 @@ function EducationStudentsPage() {
             </div>
           </div>
 
+          <div className="students-pagination" role="navigation" aria-label="Paginação de alunos">
+                <div className="students-pagination-info">
+                  {resultsCount === 0
+                    ? 'Nenhum aluno encontrado'
+                    : `Mostrando ${pageRangeStart}-${pageRangeEnd} de ${resultsCount} alunos`}
+                </div>
+                <div className="students-pagination-controls">
+                  <button type="button" onClick={handlePreviousPage} disabled={effectivePage <= 1}>
+                    Anterior
+                  </button>
+                  <span className="students-pagination-status">
+                    Página {resultsCount === 0 ? 0 : effectivePage} de {resultsCount === 0 ? 0 : totalPages}
+                  </span>
+                  <button type="button" onClick={handleNextPage} disabled={effectivePage >= totalPages || resultsCount === 0}>
+                    Próxima
+                  </button>
+                </div>
+              </div>
+
           {status === 'error' && (
             <div className="students-alert students-alert-error" role="alert">
               {errorMessage || 'Não foi possível carregar os alunos inscritos.'}
@@ -699,15 +770,37 @@ function EducationStudentsPage() {
                   </Link>
                 </header>
                 {selectedStudentEnrollments.length > 0 ? (
-                  <ul>
-                    {selectedStudentEnrollments.map((enrollment) => (
-                      <li key={`${selectedStudent.id}-${enrollment.educationClassId}`}>
-                        <strong>{enrollment.educationClassName}</strong>
-                        <span>{enrollment.educationUnitName}</span>
-                        <span>Desde {formatDate(enrollment.createdAt)}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <>
+                    <ul>
+                      {paginatedEnrollments.map((enrollment) => (
+                        <li key={`${selectedStudent.id}-${enrollment.educationClassId}`}>
+                          <strong>{enrollment.educationClassName}</strong>
+                          <span>{enrollment.educationUnitName}</span>
+                          <span>Desde {formatDate(enrollment.createdAt)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="students-modal-pagination" role="navigation" aria-label="Paginação de turmas vinculadas">
+                      <div className="students-modal-pagination-info">
+                        {`Mostrando ${modalEnrollmentsRangeStart}-${modalEnrollmentsRangeEnd} de ${selectedStudentEnrollments.length} turmas`}
+                      </div>
+                      <div className="students-modal-pagination-controls">
+                        <button type="button" onClick={handleModalEnrollmentsPrev} disabled={modalEffectiveEnrollmentsPage <= 1}>
+                          Anterior
+                        </button>
+                        <span className="students-modal-pagination-status">
+                          Página {modalEffectiveEnrollmentsPage} de {totalModalEnrollmentsPages}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleModalEnrollmentsNext}
+                          disabled={modalEffectiveEnrollmentsPage >= totalModalEnrollmentsPages}
+                        >
+                          Próxima
+                        </button>
+                      </div>
+                    </div>
+                  </>
                 ) : (
                   <p className="students-placeholder">Nenhuma turma vinculada ainda.</p>
                 )}

@@ -242,7 +242,7 @@ function ProfilePage() {
               />
             </label>
 
-            <label className="profile-field" htmlFor="profile-theme">
+            <label className="profile-field profile-field-select" htmlFor="profile-theme">
               <span>Tema preferido</span>
               <select
                 id="profile-theme"

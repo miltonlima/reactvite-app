@@ -374,7 +374,7 @@ function EducationStudentsPage() {
   }
 
   return (
-    <section className="students-page" aria-labelledby="students-title">
+    <section className="students-page page-shell" aria-labelledby="students-title">
       <header className="students-header">
         <div className="students-header-content">
           <p className="students-kicker">Rede de ensino</p>

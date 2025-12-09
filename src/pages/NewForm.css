@@ -1,8 +1,7 @@
 /* Styles for the separate NewForm page */
 .new-form-layout {
-  display: flex;
-  justify-content: center;
-  padding: 24px;
+  color: inherit;
+  width: 100%;
 }
 
 .new-form-card {

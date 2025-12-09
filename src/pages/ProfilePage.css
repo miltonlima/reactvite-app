@@ -1,8 +1,6 @@
 .profile-page {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  color: #e2e8f0;
+  color: inherit;
+  width: 100%;
 }
 
 .profile-header {

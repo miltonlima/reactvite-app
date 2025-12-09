@@ -30,7 +30,7 @@ function EducationUnitsPage() {
   }
 
   return (
-    <section className="units-page" aria-labelledby="units-title">
+    <section className="units-page page-shell" aria-labelledby="units-title">
       <header className="units-header">
         <div>
           <p className="units-kicker">Gestão acadêmica</p>

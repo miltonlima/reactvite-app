@@ -1,7 +1,6 @@
 .students-page {
-  display: grid;
-  gap: 2rem;
   color: inherit;
+  width: 100%;
 }
 
 .students-header {

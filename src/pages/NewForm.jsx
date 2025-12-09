@@ -6,7 +6,7 @@ function NewForm() {
     useRegistrationForm()
 
   return (
-    <div className="new-form-layout">
+    <div className="new-form-layout page-shell">
       <div className="new-form-card">
         <header className="new-form-header">
           <h2>Novo Formulário</h2>

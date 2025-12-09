@@ -136,7 +136,7 @@ function ProfilePage() {
 
   if (!isAuthenticated) {
     return (
-      <section className="profile-page">
+      <section className="profile-page page-shell">
         <div className="profile-card">
           <h2>Acesso não autorizado</h2>
           <p>Faça login novamente para visualizar ou editar seu cadastro.</p>
@@ -149,7 +149,7 @@ function ProfilePage() {
   }
 
   return (
-    <section className="profile-page" aria-live="polite">
+    <section className="profile-page page-shell" aria-live="polite">
       <header className="profile-header">
         <div>
           <span className="profile-kicker">Minha conta</span>

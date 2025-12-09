@@ -103,7 +103,7 @@ function EducationEnrollmentsPage() {
   }, [classes, students])
 
   return (
-    <section className="enrollments-page" aria-labelledby="enrollments-title">
+    <section className="enrollments-page page-shell" aria-labelledby="enrollments-title">
       <header className="enrollments-header">
         <div>
           <p className="enrollments-kicker">Rede de ensino</p>

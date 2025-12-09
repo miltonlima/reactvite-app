@@ -124,7 +124,7 @@ const DashboardPage = () => {
   const chartScale = maxClassTotal > 0 ? maxClassTotal : 1;
 
   return (
-    <section className="dashboard-page" aria-labelledby="dashboard-title">
+    <section className="dashboard-page page-shell" aria-labelledby="dashboard-title">
       <header className="dashboard-header">
         <div>
           <p className="dashboard-kicker">Painel</p>

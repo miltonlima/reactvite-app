@@ -54,7 +54,7 @@ function EducationGradesPage() {
   }
 
   return (
-    <section className="grades-page" aria-labelledby="grades-title">
+    <section className="grades-page page-shell" aria-labelledby="grades-title">
       <header className="grades-header">
         <div>
           <p className="grades-kicker">Rede de ensino</p>

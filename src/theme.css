@@ -89,6 +89,22 @@ body.light-mode a {
   color: #1d4ed8;
 }
 
+.page-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 3rem;
+}
+
+@media (max-width: 640px) {
+  .page-shell {
+    padding: 1rem;
+  }
+}
+
 body.light-mode .students-page,
 body.light-mode .classes-page,
 body.light-mode .units-page,

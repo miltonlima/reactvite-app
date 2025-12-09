@@ -80,7 +80,7 @@ function Reports() {
   }
 
   return (
-    <section className="reports">
+    <section className="reports page-shell">
       <header className="reports-header">
         <div>
           <span className="reports-badge">Relatório</span>

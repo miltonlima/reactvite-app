@@ -376,12 +376,12 @@ function EducationStudentsPage() {
   return (
     <section className="students-page" aria-labelledby="students-title">
       <header className="students-header">
-        <div>
+        <div className="students-header-content">
           <p className="students-kicker">Rede de ensino</p>
           <h1 id="students-title">Alunos</h1>
           <p>
             Cadastre novos alunos e clique na lista para editar em uma janela modal centralizada. As inscrições em
-            turmas ficam na tela<strong> Inscrições</strong>.
+            turmas ficam na tela<strong className="students-header-highlight">Inscrições</strong>.
           </p>
         </div>
         <button type="button" className="students-refresh" onClick={refresh} disabled={status === 'loading'}>

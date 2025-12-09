@@ -27,6 +27,26 @@
   color: rgba(226, 232, 255, 0.75);
 }
 
+.students-header-content {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.students-header-highlight {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.35rem;
+  padding: 0.15rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 255, 0.45);
+  background: rgba(99, 102, 241, 0.2);
+  color: #c7d2fe;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+}
+
 .students-kicker {
   margin: 0;
   text-transform: uppercase;
@@ -57,6 +77,259 @@
 .students-refresh:not(:disabled):hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 32px -16px rgba(34, 211, 238, 0.6);
+}
+
+body.light-mode .students-page {
+  color: #1f2937;
+}
+
+body.light-mode .students-header {
+  background: none;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  box-shadow: 0 16px 46px -34px rgba(15, 23, 42, 0.25);
+}
+
+body.light-mode .students-header h1 {
+  color: #111827;
+}
+
+body.light-mode .students-header p {
+  color: #475569;
+}
+
+body.light-mode .students-header-content {
+  gap: 0.85rem;
+}
+
+body.light-mode .students-kicker {
+  color: #2563eb;
+  background: none;
+}
+
+body.light-mode .students-header-highlight {
+  border-color: rgba(59, 130, 246, 0.38);
+  background: rgba(59, 130, 246, 0.14);
+  color: #1d4ed8;
+}
+
+body.light-mode .students-form,
+body.light-mode .students-list-card {
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  box-shadow: 0 28px 52px -40px rgba(15, 23, 42, 0.18);
+}
+
+body.light-mode .students-form-header p,
+body.light-mode .students-list-header p {
+  color: #4b5563;
+}
+
+body.light-mode .students-hint {
+  color: #475569;
+}
+
+body.light-mode .students-search label,
+body.light-mode .students-page-size label,
+body.light-mode .students-field span {
+  color: #1f2937;
+}
+
+body.light-mode .students-search input,
+body.light-mode .students-page-size select,
+body.light-mode .students-field input,
+body.light-mode .students-field textarea,
+body.light-mode .students-field select {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+body.light-mode .students-search input:focus,
+body.light-mode .students-page-size select:focus,
+body.light-mode .students-field input:focus,
+body.light-mode .students-field textarea:focus,
+body.light-mode .students-field select:focus {
+  outline-color: rgba(59, 130, 246, 0.35);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+body.light-mode .students-clear-search {
+  color: #1f2937;
+  border-color: rgba(148, 163, 184, 0.45);
+}
+
+body.light-mode .students-clear-search:hover {
+  background: rgba(148, 163, 184, 0.16);
+  box-shadow: 0 10px 24px -18px rgba(100, 116, 139, 0.35);
+}
+
+body.light-mode .students-alert {
+  background: rgba(59, 130, 246, 0.14);
+  border-color: rgba(59, 130, 246, 0.28);
+  color: #0f172a;
+}
+
+body.light-mode .students-alert-success {
+  background: rgba(34, 197, 94, 0.16);
+  color: #166534;
+}
+
+body.light-mode .students-alert-error {
+  background: rgba(239, 68, 68, 0.16);
+  color: #b91c1c;
+}
+
+body.light-mode .students-placeholder {
+  background: rgba(241, 245, 249, 0.85);
+  border-color: rgba(148, 163, 184, 0.4);
+  color: #475569;
+}
+
+body.light-mode .students-pagination {
+  color: #1f2937;
+}
+
+body.light-mode .students-pagination-controls button,
+body.light-mode .students-modal-pagination-controls button {
+  background: #f8fafc;
+  border-color: rgba(148, 163, 184, 0.4);
+  color: #1f2937;
+}
+
+body.light-mode .students-pagination-controls button:hover:not([disabled]),
+body.light-mode .students-modal-pagination-controls button:hover:not([disabled]) {
+  background: rgba(148, 163, 184, 0.22);
+}
+
+body.light-mode .students-table-wrapper {
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  box-shadow: 0 24px 50px -42px rgba(15, 23, 42, 0.22);
+}
+
+body.light-mode .students-table thead th {
+  background: rgba(241, 245, 249, 0.9);
+  color: #475569;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+body.light-mode .students-table tbody td {
+  border-bottom: 1px solid rgba(203, 213, 225, 0.7);
+}
+
+body.light-mode .students-table tbody tr {
+  background: #f8fafc;
+}
+
+body.light-mode .students-table tbody tr:nth-child(even) {
+  background: #eef2ff;
+}
+
+body.light-mode .students-table tbody tr:hover,
+body.light-mode .students-table tbody tr:focus-visible {
+  background: rgba(79, 70, 229, 0.16);
+}
+
+body.light-mode .students-row-editing {
+  outline-color: rgba(37, 99, 235, 0.4);
+}
+
+body.light-mode .students-table tbody td::before {
+  color: rgba(100, 116, 139, 0.8);
+}
+
+body.light-mode .students-modal-overlay {
+  background: rgba(15, 23, 42, 0.3);
+}
+
+body.light-mode .students-modal {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.98));
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #1f2937;
+}
+
+body.light-mode .students-modal-chip {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+}
+
+body.light-mode .students-modal-subtitle {
+  color: #2563eb;
+}
+
+body.light-mode .students-modal-close {
+  color: rgba(30, 41, 59, 0.7);
+}
+
+body.light-mode .students-modal-close:hover {
+  color: rgba(30, 41, 59, 0.95);
+}
+
+body.light-mode .students-modal-enrollments {
+  background: rgba(248, 250, 252, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.32);
+}
+
+body.light-mode .students-modal-enrollments li span {
+  color: #475569;
+}
+
+body.light-mode .students-modal-pagination {
+  color: #1f2937;
+}
+
+body.light-mode .students-modal-actions button {
+  color: #1f2937;
+  border-color: rgba(148, 163, 184, 0.4);
+}
+
+body.light-mode .students-modal-actions button:not([type='submit']) {
+  background: rgba(241, 245, 249, 0.8);
+}
+
+body.light-mode .students-modal-actions button:not([type='submit']):hover {
+  background: rgba(37, 99, 235, 0.14);
+}
+
+body.light-mode .students-modal-actions button[type='submit'] {
+  color: #0f172a;
+}
+
+body.light-mode .students-enrollment-empty,
+body.light-mode .students-enrollment-row select {
+  background: rgba(248, 250, 252, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  color: #1f2937;
+}
+
+body.light-mode .students-enrollment-feedback {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.24);
+  color: #1d4ed8;
+}
+
+body.light-mode .students-enrollment-feedback-success {
+  background: rgba(34, 197, 94, 0.16);
+  color: #166534;
+}
+
+body.light-mode .students-enrollment-feedback-error {
+  background: rgba(239, 68, 68, 0.16);
+  color: #b91c1c;
+}
+
+body.light-mode .students-enrollment-hint {
+  color: #475569;
+}
+
+body.light-mode .students-enrollment-item button {
+  background: rgba(239, 68, 68, 0.16);
+  color: #b91c1c;
+}
+
+body.light-mode .students-enrollment-item button:hover:not([disabled]) {
+  box-shadow: 0 10px 24px -18px rgba(224, 36, 36, 0.35);
 }
 
 .students-layout {

@@ -12,6 +12,10 @@
   --font-family: 'Poppins', 'Inter', sans-serif;
 }
 
+html {
+  min-height: 100%;
+}
+
 body {
   font-family: var(--font-family);
   color: var(--page-text, #ffffff);

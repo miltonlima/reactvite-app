@@ -7,7 +7,7 @@
 .new-form-card {
   width: 100%;
   max-width: 720px;
-  /* darker card for a less bright UI */
+  background: transparent;
   background: linear-gradient(180deg,#071022,#0b1220);
   border-radius: 12px;
   padding: 20px;

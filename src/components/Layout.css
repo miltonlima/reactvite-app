@@ -6,7 +6,7 @@
   min-height: 100vh;
   padding: 2.5rem clamp(1.5rem, 4vw, 3rem);
   gap: 2rem;
-  background: var(--page-background, radial-gradient(circle at top, rgba(99, 102, 241, 0.18) 0%, #020617 60%, #010313 100%));
+  background: transparent;
   color: var(--page-text, #e2e8f0);
 }
 

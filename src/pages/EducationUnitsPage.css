@@ -12,9 +12,9 @@
   gap: 1.5rem;
   padding: 1.75rem 2rem;
   border-radius: 20px;
-  border: 1px solid rgba(148, 163, 255, 0.28);
-  background: rgba(15, 23, 42, 0.55);
-  box-shadow: 0 28px 60px -50px rgba(59, 130, 246, 0.6);
+  border: 1px solid var(--surface-border, rgba(255, 255, 255, 0.08));
+  background: var(--surface, rgba(15, 23, 42, 0.35));
+  box-shadow: var(--shadow-sm, 0 22px 48px -32px rgba(15, 23, 42, 0.65));
 }
 
 .units-header h1 {
@@ -81,9 +81,9 @@
   gap: 1.75rem;
   padding: 2rem;
   border-radius: 22px;
-  border: 1px solid rgba(148, 163, 255, 0.22);
-  background: rgba(15, 23, 42, 0.58);
-  box-shadow: 0 32px 70px -48px rgba(59, 130, 246, 0.6);
+  border: 1px solid var(--surface-border, rgba(255, 255, 255, 0.08));
+  background: var(--surface, rgba(15, 23, 42, 0.35));
+  box-shadow: var(--shadow-sm, 0 22px 48px -32px rgba(15, 23, 42, 0.65));
 }
 
 .units-form-header h2,
@@ -142,8 +142,8 @@
 .units-field input {
   border-radius: 14px;
   padding: 0.85rem 1rem;
-  border: 1px solid rgba(148, 163, 255, 0.25);
-  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid var(--surface-border, rgba(255, 255, 255, 0.08));
+  background: var(--surface-muted, rgba(15, 23, 42, 0.55));
   color: inherit;
 }
 
@@ -224,8 +224,8 @@ body.light-mode .units-reset:focus-visible {
   margin: 0;
   padding: 1.25rem 1.5rem;
   border-radius: 16px;
-  border: 1px dashed rgba(148, 163, 255, 0.35);
-  background: rgba(15, 23, 42, 0.35);
+  border: 1px dashed var(--surface-border, rgba(255, 255, 255, 0.12));
+  background: var(--surface-muted, rgba(15, 23, 42, 0.55));
   text-align: center;
   color: rgba(226, 232, 255, 0.7);
 }
@@ -243,8 +243,8 @@ body.light-mode .units-reset:focus-visible {
   gap: 1rem;
   padding: 1.4rem 1.6rem;
   border-radius: 18px;
-  background: rgba(15, 23, 42, 0.65);
-  border: 1px solid rgba(148, 163, 255, 0.25);
+  background: var(--surface-muted, rgba(15, 23, 42, 0.55));
+  border: 1px solid var(--surface-border, rgba(255, 255, 255, 0.08));
 }
 
 .units-item-header {
@@ -275,13 +275,13 @@ body.light-mode .units-reset:focus-visible {
 }
 
 .units-item-actions button:first-child {
-  background: rgba(96, 165, 250, 0.24);
-  color: rgba(226, 232, 255, 0.9);
+  background: var(--surface, rgba(15, 23, 42, 0.35));
+  color: inherit;
 }
 
 .units-item-actions button:last-child {
   background: rgba(248, 113, 113, 0.2);
-  color: #fecaca;
+  color: var(--danger-fg, #fecaca);
 }
 
 .units-item-actions button:hover {
@@ -303,7 +303,7 @@ body.light-mode .units-reset:focus-visible {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   background: rgba(96, 165, 250, 0.2);
-  color: rgba(191, 219, 254, 0.9);
+  color: var(--text-secondary, #94a3b8);
 }
 
 .units-item dl {

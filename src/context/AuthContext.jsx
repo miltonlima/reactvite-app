@@ -3,8 +3,7 @@ import api from '../services/api';
 
 const AuthContext = createContext();
 
-// Lock the application to the dark theme to keep page backgrounds consistent.
-const normalizeTheme = () => 'dark';
+const normalizeTheme = (value) => (value === 'light' ? 'light' : 'dark');
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));

@@ -46,7 +46,6 @@ export function useEducationUnits() {
       })
 
       if (response.status === 401) {
-        logout?.()
         setStatus('idle')
         setErrorMessage('Sua sessão expirou. Faça login novamente.')
         return

@@ -105,6 +105,7 @@ body.light-mode a {
   }
 }
 
+body.light-mode .dashboard-page,
 body.light-mode .students-page,
 body.light-mode .classes-page,
 body.light-mode .units-page,
@@ -116,6 +117,9 @@ body.light-mode .simple-layout {
   color: #1f2937;
 }
 
+body.light-mode .dashboard-header p,
+body.light-mode .dashboard-unit-header p,
+body.light-mode .dashboard-summary-row p,
 body.light-mode .students-header p,
 body.light-mode .classes-header p,
 body.light-mode .units-header p,
@@ -127,6 +131,8 @@ body.light-mode .reports-header p {
 
 body.light-mode .students-form,
 body.light-mode .students-list-card,
+body.light-mode .dashboard-card,
+body.light-mode .dashboard-metric,
 body.light-mode .classes-form,
 body.light-mode .classes-list-card,
 body.light-mode .units-form,
@@ -137,6 +143,8 @@ body.light-mode .reports-table-wrapper,
 body.light-mode .reports-detail,
 body.light-mode .reports-detail-grid div,
 body.light-mode .reports-empty,
+body.light-mode .dashboard-unit-card,
+body.light-mode .dashboard-empty,
 body.light-mode .form,
 body.light-mode .modern-form,
 body.light-mode .simple-card,
@@ -154,6 +162,16 @@ body.light-mode .enrollments-placeholder {
   border-color: #d6defe !important;
   box-shadow: 0 26px 56px -36px rgba(59, 130, 246, 0.18);
   color: #0f172a;
+}
+
+body.light-mode .dashboard-metric-label,
+body.light-mode .dashboard-class-value,
+body.light-mode .dashboard-unit-empty {
+  color: #475569;
+}
+
+body.light-mode .dashboard-class-bar {
+  background: #e2e8f0;
 }
 
 body.light-mode .students-form-header p,
@@ -288,6 +306,7 @@ body.light-mode .students-alert,
 body.light-mode .classes-alert,
 body.light-mode .units-alert,
 body.light-mode .enrollments-alert,
+body.light-mode .dashboard-alert,
 body.light-mode .profile-alert {
   color: #0f172a;
 }

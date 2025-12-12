@@ -127,7 +127,7 @@ const DashboardPage = () => {
     <section className="dashboard-page page-shell" aria-labelledby="dashboard-title">
       <header className="dashboard-header">
         <div>
-          <p className="dashboard-kicker">Painel</p>
+          <p className="dashboard-kicker">Painel1</p>
           <h1 id="dashboard-title">Inscrições por unidades e turmas</h1>
           <p>
             Acompanhe como os alunos estão distribuídos entre as unidades de ensino e suas turmas.
